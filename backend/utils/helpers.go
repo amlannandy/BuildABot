@@ -1,0 +1,39 @@
+package utils
+
+import (
+	"encoding/json"
+	"net/http"
+	"time"
+
+	"os"
+
+	"github.com/golang-jwt/jwt/v5"
+)
+
+func GetEnvironmentVariable(key string) string {
+	environmentValue := os.Getenv(key)
+	if environmentValue == "" {
+		LogError("Value not set for %v in .env file", environmentValue)
+	}
+	return environmentValue
+}
+
+func GenerateJWT(userID uint) (string, error) {
+	claims := jwt.MapClaims{
+		"sub": userID,
+		"exp": time.Now().Add(24 * time.Hour).Unix(),
+		"iat": time.Now().Unix(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+}
+
+func BuildJSONResponse(w http.ResponseWriter, status int, payload any) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	json.NewEncoder(w).Encode(payload)
+}
+
+func BuildErrorResponse(w http.ResponseWriter, status int, msg string) {
+	BuildJSONResponse(w, status, map[string]string{"error": msg})
+}

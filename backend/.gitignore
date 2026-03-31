@@ -1,0 +1,24 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Compiled binary
+/splitify
+/bin/
+
+# Go toolchain
+vendor/
+
+# Test output
+*.test
+coverage.out
+coverage.html
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
