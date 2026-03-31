@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"build-a-bot/dto"
 	"encoding/json"
 	"net/http"
 	"time"
@@ -28,12 +29,14 @@ func GenerateJWT(userID uint) (string, error) {
 	return token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 }
 
-func BuildJSONResponse(w http.ResponseWriter, status int, payload any) {
+func BuildJSONResponse[T any](w http.ResponseWriter, status int, payload dto.SuccessResponse[T]) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	json.NewEncoder(w).Encode(payload)
 }
 
-func BuildErrorResponse(w http.ResponseWriter, status int, msg string) {
-	BuildJSONResponse(w, status, map[string]string{"error": msg})
+func BuildErrorResponse(w http.ResponseWriter, status int, msgs ...string) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	json.NewEncoder(w).Encode(dto.ErrorResponse{Errors: msgs})
 }

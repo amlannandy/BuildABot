@@ -69,7 +69,10 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.BuildJSONResponse(w, http.StatusCreated, dto.AuthResponse{Token: token, User: *created})
+	utils.BuildJSONResponse(w, http.StatusCreated, dto.SuccessResponse[string]{
+		Data:    token,
+		Message: "User successfully registered",
+	})
 }
 
 // Login godoc
@@ -108,7 +111,10 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.BuildJSONResponse(w, http.StatusOK, dto.AuthResponse{Token: token, User: *user})
+	utils.BuildJSONResponse(w, http.StatusOK, dto.SuccessResponse[string]{
+		Data:    token,
+		Message: "User successfully logged in",
+	})
 }
 
 // GetCurrentUser godoc
@@ -126,5 +132,8 @@ func (h *AuthHandler) GetCurrentUser(w http.ResponseWriter, r *http.Request) {
 		utils.BuildErrorResponse(w, http.StatusUnauthorized, "User not authenticated")
 		return
 	}
-	utils.BuildJSONResponse(w, http.StatusOK, user)
+	utils.BuildJSONResponse(w, http.StatusOK, dto.SuccessResponse[models.User]{
+		Data:    *user,
+		Message: "Current user retrieved",
+	})
 }

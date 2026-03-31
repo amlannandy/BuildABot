@@ -20,7 +20,7 @@ func JWTAuth(next http.Handler) http.Handler {
 		header := r.Header.Get("Authorization")
 		if !strings.HasPrefix(header, "Bearer ") {
 			utils.LogWarn("Missing or malformed Authorization header")
-			utils.BuildErrorResponse(w, http.StatusUnauthorized, "missing or malformed token")
+			utils.BuildErrorResponse(w, http.StatusUnauthorized, "Missing or malformed token")
 			return
 		}
 
@@ -34,7 +34,7 @@ func JWTAuth(next http.Handler) http.Handler {
 
 		if err != nil || !token.Valid {
 			utils.LogWarn("JWTAuth: invalid or expired token — %v", err)
-			utils.BuildErrorResponse(w, http.StatusUnauthorized, "invalid or expired token")
+			utils.BuildErrorResponse(w, http.StatusUnauthorized, "Invalid or expired token")
 			return
 		}
 

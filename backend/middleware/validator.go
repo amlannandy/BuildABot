@@ -1,11 +1,12 @@
 package middleware
 
 import (
+	"build-a-bot/utils"
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
-	"strings"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -16,25 +17,36 @@ func ValidateBody[T any](next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		bodyBytes, err := io.ReadAll(r.Body)
 		if err != nil {
-			http.Error(w, "failed to read request body", http.StatusBadRequest)
+			utils.BuildErrorResponse(w, http.StatusBadRequest, "Failed to read request body")
 			return
 		}
-		r.Body = io.NopCloser(bytes.NewReader(bodyBytes)) // restore for handler
+		r.Body = io.NopCloser(bytes.NewReader(bodyBytes))
 
 		var body T
 		if err := json.Unmarshal(bodyBytes, &body); err != nil {
-			http.Error(w, "invalid JSON", http.StatusBadRequest)
+			utils.BuildErrorResponse(w, http.StatusBadRequest, "Invalid JSON")
 			return
 		}
 
 		if err := validate.Struct(body); err != nil {
-			errs := map[string]string{}
+			var errs []string
 			for _, e := range err.(validator.ValidationErrors) {
-				errs[strings.ToLower(e.Field())] = e.Tag()
+				var msg string
+				switch e.Tag() {
+				case "required":
+					msg = fmt.Sprintf("%s is required", e.Field())
+				case "email":
+					msg = fmt.Sprintf("%s must be a valid email address", e.Field())
+				case "min":
+					msg = fmt.Sprintf("%s must be at least %s characters", e.Field(), e.Param())
+				case "max":
+					msg = fmt.Sprintf("%s must be at most %s characters", e.Field(), e.Param())
+				default:
+					msg = fmt.Sprintf("%s is invalid", e.Field())
+				}
+				errs = append(errs, msg)
 			}
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusUnprocessableEntity)
-			json.NewEncoder(w).Encode(map[string]interface{}{"errors": errs})
+			utils.BuildErrorResponse(w, http.StatusUnprocessableEntity, errs...)
 			return
 		}
 
