@@ -19,9 +19,7 @@ func New(authHandler *handlers.AuthHandler) http.Handler {
 	protected := api.NewRoute().Subrouter()
 	protected.Use(middleware.JWTAuth)
 
-	// Auth routes
 	mountAuthRoutes(api, authHandler)
-	mountProtectedAuthRoutes(protected, authHandler)
 
 	return r
 }
