@@ -44,6 +44,12 @@ definitions:
     - name
     - password
     type: object
+  dto.SuccessResponse-any:
+    properties:
+      data: {}
+      message:
+        type: string
+    type: object
   dto.SuccessResponse-models_ChatBot:
     properties:
       data:
@@ -63,6 +69,17 @@ definitions:
       data:
         type: string
       message:
+        type: string
+    type: object
+  dto.UpdateChatBotRequest:
+    properties:
+      config:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      workflow:
         type: string
     type: object
   models.ChatBot:
@@ -178,6 +195,104 @@ paths:
       summary: Register a new user
       tags:
       - auth
+  /chatbots/{id}:
+    delete:
+      parameters:
+      - description: ChatBot ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SuccessResponse-any'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete a chatbot
+      tags:
+      - chatbots
+    get:
+      parameters:
+      - description: ChatBot ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SuccessResponse-models_ChatBot'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get chatbot details by ID
+      tags:
+      - chatbots
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: ChatBot ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: ChatBot update payload
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateChatBotRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SuccessResponse-models_ChatBot'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update chatbot details
+      tags:
+      - chatbots
   /chatbots/create:
     post:
       consumes:
