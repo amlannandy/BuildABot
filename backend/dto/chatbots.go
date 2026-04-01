@@ -13,3 +13,10 @@ type UpdateChatBotRequest struct {
 	Workflow    *string `json:"workflow"`
 	Config      *string `json:"config"`
 }
+
+type ChatBotFilters struct {
+	Name        *string `json:"name"`
+	Description *string `json:"description"`
+}
+
+type ListChatBotsRequest = ListRequest[ChatBotFilters]

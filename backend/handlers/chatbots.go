@@ -71,6 +71,61 @@ func (h *ChatBotHandler) CreateChatBot(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// ListChatBots godoc
+// @Summary      List chatbots with pagination and filters
+// @Tags         chatbots
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        body body dto.ListChatBotsRequest true "List chatbots payload"
+// @Success      200  {object} dto.SuccessResponse[dto.PaginatedResponse[models.ChatBot]]
+// @Failure      400  {object} dto.ErrorResponse
+// @Failure      500  {object} dto.ErrorResponse
+// @Router       /chatbots/list [post]
+func (h *ChatBotHandler) ListChatBots(w http.ResponseWriter, r *http.Request) {
+	var req dto.ListChatBotsRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		utils.BuildErrorResponse(w, http.StatusBadRequest, "Invalid request body")
+		return
+	}
+
+	if req.Limit <= 0 {
+		req.Limit = 10
+	}
+	if req.Page <= 0 {
+		req.Page = 1
+	}
+
+	userId := uint(r.Context().Value(middleware.UserIDKey).(float64))
+	offset := (req.Page - 1) * req.Limit
+
+	chatBots, total, err := h.repo.FindPaginated(repository.ChatBotListParams{
+		UserID:     userId,
+		Limit:      req.Limit,
+		Offset:     offset,
+		NameFilter: req.Filters.Name,
+		DescFilter: req.Filters.Description,
+	})
+	if err != nil {
+		utils.BuildErrorResponse(w, http.StatusInternalServerError, "Failed to fetch chatbots")
+		return
+	}
+
+	utils.BuildJSONResponse(w, http.StatusOK, dto.SuccessResponse[dto.PaginatedResponse[models.ChatBot]]{
+		Data: dto.PaginatedResponse[models.ChatBot]{
+			Data: chatBots,
+			Pagination: dto.PaginationMeta{
+				Page:    req.Page,
+				Limit:   req.Limit,
+				Total:   total,
+				HasMore: int64(offset+req.Limit) < total,
+				HasPrev: req.Page > 1,
+			},
+		},
+		Message: "ChatBots retrieved successfully",
+	})
+}
+
 // GetChatBot godoc
 // @Summary      Get chatbot details by ID
 // @Tags         chatbots

@@ -1,5 +1,12 @@
 basePath: /api/v1
 definitions:
+  dto.ChatBotFilters:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
   dto.CreateChatBotRequest:
     properties:
       config:
@@ -20,6 +27,15 @@ definitions:
           type: string
         type: array
     type: object
+  dto.ListChatBotsRequest:
+    properties:
+      filters:
+        $ref: '#/definitions/dto.ChatBotFilters'
+      limit:
+        type: integer
+      page:
+        type: integer
+    type: object
   dto.LoginRequest:
     properties:
       email:
@@ -29,6 +45,28 @@ definitions:
     required:
     - email
     - password
+    type: object
+  dto.PaginatedResponse-models_ChatBot:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.ChatBot'
+        type: array
+      pagination:
+        $ref: '#/definitions/dto.PaginationMeta'
+    type: object
+  dto.PaginationMeta:
+    properties:
+      has_more:
+        type: boolean
+      has_prev:
+        type: boolean
+      limit:
+        type: integer
+      page:
+        type: integer
+      total:
+        type: integer
     type: object
   dto.RegisterRequest:
     properties:
@@ -326,6 +364,37 @@ paths:
       security:
       - BearerAuth: []
       summary: Create a new chatbot
+      tags:
+      - chatbots
+  /chatbots/list:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: List chatbots payload
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ListChatBotsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PaginatedResponse-models_ChatBot'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List chatbots with pagination and filters
       tags:
       - chatbots
 securityDefinitions:

@@ -6,8 +6,17 @@ import (
 	"gorm.io/gorm"
 )
 
+type ChatBotListParams struct {
+	UserID      uint
+	Limit       int
+	Offset      int
+	NameFilter  *string
+	DescFilter  *string
+}
+
 type ChatBotRepository interface {
 	FindAllByUserID(userID uint) ([]models.ChatBot, error)
+	FindPaginated(params ChatBotListParams) ([]models.ChatBot, int64, error)
 	FindByID(id uint) (*models.ChatBot, error)
 	Create(chatBot *models.ChatBot) (*models.ChatBot, error)
 	Update(chatBot *models.ChatBot) (*models.ChatBot, error)
@@ -20,6 +29,30 @@ type chatBotRepo struct {
 
 func NewChatBotRepository(db *gorm.DB) ChatBotRepository {
 	return &chatBotRepo{db: db}
+}
+
+func (r *chatBotRepo) FindPaginated(params ChatBotListParams) ([]models.ChatBot, int64, error) {
+	var chatBots []models.ChatBot
+	var total int64
+
+	query := r.db.Model(&models.ChatBot{}).Where("user_id = ?", params.UserID)
+
+	if params.NameFilter != nil && *params.NameFilter != "" {
+		query = query.Where("name ILIKE ?", "%"+*params.NameFilter+"%")
+	}
+	if params.DescFilter != nil && *params.DescFilter != "" {
+		query = query.Where("description ILIKE ?", "%"+*params.DescFilter+"%")
+	}
+
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	if err := query.Limit(params.Limit).Offset(params.Offset).Find(&chatBots).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return chatBots, total, nil
 }
 
 func (r *chatBotRepo) FindAllByUserID(userID uint) ([]models.ChatBot, error) {
