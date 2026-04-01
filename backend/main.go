@@ -40,21 +40,25 @@ func main() {
 	})
 	if err != nil {
 		utils.LogFatal("Failed to connect to database: %v", err)
+	} else {
+		utils.LogSuccess("Successfully connected to database!")
 	}
 
 	// Auto-migrate models
 	// Note: use golang-migrate or Atlas for production migrations
-	if err := db.AutoMigrate(&models.User{}); err != nil {
+	if err := db.AutoMigrate(&models.User{}, &models.ChatBot{}); err != nil {
 		utils.LogFatal("Auto-migration failed: %v", err)
 	}
 
 	// Wire up dependencies
 	userRepo := repository.NewUserRepository(db)
+	chatBotRepo := repository.NewChatBotRepository(db)
 
 	authHandler := handlers.NewAuthHandler(userRepo)
+	chatBotHandler := handlers.NewChatBotHandler(chatBotRepo)
 
 	// Build router
-	r := router.New(authHandler)
+	r := router.New(authHandler, chatBotHandler)
 
 	// Configure HTTP server
 	srv := &http.Server{

@@ -1,11 +1,24 @@
 basePath: /api/v1
 definitions:
-  dto.AuthResponse:
+  dto.CreateChatBotRequest:
     properties:
-      token:
+      config:
         type: string
-      user:
-        $ref: '#/definitions/models.User'
+      description:
+        type: string
+      name:
+        type: string
+      workflow:
+        type: string
+    required:
+    - name
+    type: object
+  dto.ErrorResponse:
+    properties:
+      errors:
+        items:
+          type: string
+        type: array
     type: object
   dto.LoginRequest:
     properties:
@@ -30,6 +43,48 @@ definitions:
     - email
     - name
     - password
+    type: object
+  dto.SuccessResponse-models_ChatBot:
+    properties:
+      data:
+        $ref: '#/definitions/models.ChatBot'
+      message:
+        type: string
+    type: object
+  dto.SuccessResponse-models_User:
+    properties:
+      data:
+        $ref: '#/definitions/models.User'
+      message:
+        type: string
+    type: object
+  dto.SuccessResponse-string:
+    properties:
+      data:
+        type: string
+      message:
+        type: string
+    type: object
+  models.ChatBot:
+    properties:
+      api_key:
+        type: string
+      config:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+      workflow:
+        type: string
     type: object
   models.User:
     properties:
@@ -63,13 +118,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.User'
+            $ref: '#/definitions/dto.SuccessResponse-models_User'
         "401":
           description: Unauthorized
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Get current authenticated user
@@ -92,13 +145,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.AuthResponse'
+            $ref: '#/definitions/dto.SuccessResponse-string'
         "401":
           description: Unauthorized
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.ErrorResponse'
       summary: Login
       tags:
       - auth
@@ -119,16 +170,49 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/dto.AuthResponse'
+            $ref: '#/definitions/dto.SuccessResponse-string'
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.ErrorResponse'
       summary: Register a new user
       tags:
       - auth
+  /chatbots/create:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ChatBot creation payload
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateChatBotRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.SuccessResponse-models_ChatBot'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new chatbot
+      tags:
+      - chatbots
 securityDefinitions:
   BearerAuth:
     in: header

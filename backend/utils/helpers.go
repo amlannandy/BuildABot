@@ -40,3 +40,12 @@ func BuildErrorResponse(w http.ResponseWriter, status int, msgs ...string) {
 	w.WriteHeader(status)
 	json.NewEncoder(w).Encode(dto.ErrorResponse{Errors: msgs})
 }
+
+func GenerateAPIKey() (*string, bool) {
+	key, err := jwt.New(jwt.SigningMethodHS256).SignedString([]byte(os.Getenv("API_KEY_SECRET")))
+	if err != nil {
+		LogError("Failed to generate API key: %v", err)
+		return nil, false
+	}
+	return &key, true
+}

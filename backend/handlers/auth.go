@@ -27,8 +27,8 @@ func NewAuthHandler(repo repository.UserRepository) *AuthHandler {
 // @Accept       json
 // @Produce      json
 // @Param        body body dto.RegisterRequest true "Register payload"
-// @Success      201  {object} dto.AuthResponse
-// @Failure      400  {object} map[string]string
+// @Success      201  {object} dto.SuccessResponse[string]
+// @Failure      400  {object} dto.ErrorResponse
 // @Router       /auth/register [post]
 func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	var req dto.RegisterRequest
@@ -81,8 +81,8 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 // @Accept       json
 // @Produce      json
 // @Param        body body dto.LoginRequest true "Login payload"
-// @Success      200  {object} dto.AuthResponse
-// @Failure      401  {object} map[string]string
+// @Success      200  {object} dto.SuccessResponse[string]
+// @Failure      401  {object} dto.ErrorResponse
 // @Router       /auth/login [post]
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	var req dto.LoginRequest
@@ -122,8 +122,8 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 // @Tags         auth
 // @Produce      json
 // @Security     BearerAuth
-// @Success      200  {object} models.User
-// @Failure      401  {object} map[string]string
+// @Success      200  {object} dto.SuccessResponse[models.User]
+// @Failure      401  {object} dto.ErrorResponse
 // @Router       /auth/current-user [get]
 func (h *AuthHandler) GetCurrentUser(w http.ResponseWriter, r *http.Request) {
 	userId := uint(r.Context().Value(middleware.UserIDKey).(float64))
