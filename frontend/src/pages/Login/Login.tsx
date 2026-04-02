@@ -10,13 +10,14 @@ import {
   Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { ROUTES } from '@constants/routes';
-import logo from '@assets/logo.png';
-import { useLogin } from '@hooks/auth/useLogin';
-import type { ApiErrorResponse } from '@dto/api';
 import { notifications } from '@mantine/notifications';
+
 import { handleAuthenticationSuccess } from '@api/utils';
-import { FormValidationUtils } from '@utils/auth';
+import logo from '@assets/logo.png';
+import { ROUTES } from '@constants/routes';
+import type { ApiErrorResponse } from '@dto/api';
+import { useLogin } from '@hooks/auth/useLogin';
+import { validateEmail, validatePassword } from '@utils/auth';
 
 const Login = () => {
   const { mutate, isPending } = useLogin();
@@ -27,8 +28,8 @@ const Login = () => {
       password: '',
     },
     validate: {
-      email: FormValidationUtils.validateEmail,
-      password: FormValidationUtils.validatePassword,
+      email: validateEmail,
+      password: validatePassword,
     },
   });
 
@@ -44,7 +45,7 @@ const Login = () => {
         });
       },
       onError: (error: ApiErrorResponse) => {
-        const errorMessage = error.errors?.[0] || 'Something went wrong';
+        const errorMessage = error.errors[0] || 'Something went wrong';
         notifications.show({
           title: 'Login Failed',
           message: errorMessage,

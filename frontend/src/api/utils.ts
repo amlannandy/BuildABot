@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import type { ApiErrorResponse } from '../types/api';
 
 export function ApiErrorHandler(error: unknown): ApiErrorResponse {

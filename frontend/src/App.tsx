@@ -1,13 +1,15 @@
-import { Route, Routes, BrowserRouter as Router } from 'react-router-dom';
-import './App.css';
+import { Route, Routes, BrowserRouter } from 'react-router-dom';
 
-import Login from '@pages/Login';
-import Register from '@pages/Register';
-import Home from '@pages/Home';
-import { ROUTES } from '@constants/routes';
 import { MantineProvider, createTheme } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+import { ROUTES } from '@constants/routes';
+import Home from '@pages/Home';
+import Login from '@pages/Login';
+import Register from '@pages/Register';
+
+import './App.css';
 
 const queryClient = new QueryClient();
 
@@ -36,13 +38,13 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <MantineProvider theme={theme} defaultColorScheme="dark">
         <Notifications />
-        <Router>
+        <BrowserRouter>
           <Routes>
             <Route path={ROUTES.HOME} element={<Home />} />
             <Route path={ROUTES.LOGIN} element={<Login />} />
             <Route path={ROUTES.REGISTER} element={<Register />} />
           </Routes>
-        </Router>
+        </BrowserRouter>
       </MantineProvider>
     </QueryClientProvider>
   );

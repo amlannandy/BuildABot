@@ -9,13 +9,19 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
-import { ROUTES } from '@constants/routes';
-import logo from '@assets/logo.png';
 import { useForm } from '@mantine/form';
-import { useRegister } from '@hooks/auth/useRegister';
 import { notifications } from '@mantine/notifications';
+
 import { handleAuthenticationSuccess } from '@api/utils';
-import { FormValidationUtils } from '@utils/auth';
+import logo from '@assets/logo.png';
+import { ROUTES } from '@constants/routes';
+import { useRegister } from '@hooks/auth/useRegister';
+import {
+  validateName,
+  validateEmail,
+  validatePassword,
+  validateConfirmPassword,
+} from '@utils/auth';
 
 const Register = () => {
   const { mutate: handleRegister, isPending: isRegistering } = useRegister();
@@ -28,10 +34,10 @@ const Register = () => {
       confirmPassword: '',
     },
     validate: {
-      name: FormValidationUtils.validateName,
-      email: FormValidationUtils.validateEmail,
-      password: FormValidationUtils.validatePassword,
-      confirmPassword: FormValidationUtils.validateConfirmPassword,
+      name: validateName,
+      email: validateEmail,
+      password: validatePassword,
+      confirmPassword: validateConfirmPassword,
     },
   });
 
@@ -53,7 +59,7 @@ const Register = () => {
           });
         },
         onError: (error) => {
-          const errorMessage = error.errors?.[0] || 'Something went wrong';
+          const errorMessage = error.errors[0] || 'Something went wrong';
           notifications.show({
             title: 'Registration Failed',
             message: errorMessage,
