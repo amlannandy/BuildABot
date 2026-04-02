@@ -12,9 +12,9 @@ import {
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 
-import { handleAuthenticationSuccess } from '@api/utils';
 import logo from '@assets/logo.png';
 import { ROUTES } from '@constants/routes';
+import { useAuth } from '@context/auth';
 import { useRegister } from '@hooks/auth/useRegister';
 import {
   validateName,
@@ -24,6 +24,7 @@ import {
 } from '@utils/auth';
 
 const Register = () => {
+  const { authenticate } = useAuth();
   const { mutate: handleRegister, isPending: isRegistering } = useRegister();
 
   const form = useForm({
@@ -51,12 +52,12 @@ const Register = () => {
       {
         onSuccess: (data) => {
           const token = data.data;
-          handleAuthenticationSuccess(token);
           notifications.show({
             title: 'Registration Successful',
             message: 'Welcome to BuildABot!',
             color: 'green',
           });
+          void authenticate(token);
         },
         onError: (error) => {
           const errorMessage = error.errors[0] || 'Something went wrong';

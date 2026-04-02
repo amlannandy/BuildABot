@@ -109,7 +109,8 @@ const CreateChatBotModal = ({
         description: chatbot?.description ?? '',
       });
     }
-  }, [opened, chatbot, form]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [opened, chatbot]);
 
   return (
     <Modal

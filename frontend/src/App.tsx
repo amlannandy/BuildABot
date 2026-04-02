@@ -43,8 +43,8 @@ function App() {
       <MantineProvider theme={theme} defaultColorScheme="dark">
         <ModalsProvider>
           <Notifications />
-          <AuthProvider>
-            <BrowserRouter>
+          <BrowserRouter>
+            <AuthProvider>
               <Routes>
                 <Route element={<PrivateRoute />}>
                   <Route path={ROUTES.HOME} element={<Home />} />
@@ -54,8 +54,8 @@ function App() {
                   <Route path={ROUTES.REGISTER} element={<Register />} />
                 </Route>
               </Routes>
-            </BrowserRouter>
-          </AuthProvider>
+            </AuthProvider>
+          </BrowserRouter>
         </ModalsProvider>
       </MantineProvider>
     </QueryClientProvider>

@@ -12,15 +12,16 @@ import {
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 
-import { handleAuthenticationSuccess } from '@api/utils';
 import logo from '@assets/logo.png';
 import { ROUTES } from '@constants/routes';
+import { useAuth } from '@context/auth';
 import type { ApiErrorResponse } from '@dto/api';
 import { useLogin } from '@hooks/auth/useLogin';
 import { validateEmail, validatePassword } from '@utils/auth';
 
 const Login = () => {
   const { mutate, isPending } = useLogin();
+  const { authenticate } = useAuth();
 
   const form = useForm({
     initialValues: {
@@ -37,12 +38,12 @@ const Login = () => {
     mutate(values, {
       onSuccess: (data) => {
         const token = data.data;
-        handleAuthenticationSuccess(token);
         notifications.show({
           title: 'Login Successful',
           message: 'Welcome back to BuildABot!',
           color: 'green',
         });
+        void authenticate(token);
       },
       onError: (error: ApiErrorResponse) => {
         const errorMessage = error.errors[0] || 'Something went wrong';
