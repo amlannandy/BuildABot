@@ -21,6 +21,7 @@ export default defineConfig({
       '@hooks': '/src/hooks',
       '@pages': '/src/pages',
       '@dto': '/src/types',
+      '@utils': '/src/utils',
     },
   },
 });

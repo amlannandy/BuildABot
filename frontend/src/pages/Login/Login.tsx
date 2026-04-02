@@ -16,6 +16,7 @@ import { useLogin } from '@hooks/auth/useLogin';
 import type { ApiErrorResponse } from '@dto/api';
 import { notifications } from '@mantine/notifications';
 import { handleAuthenticationSuccess } from '@api/utils';
+import { FormValidationUtils } from '@utils/auth';
 
 const Login = () => {
   const { mutate, isPending } = useLogin();
@@ -26,8 +27,8 @@ const Login = () => {
       password: '',
     },
     validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-      password: (value) => (value.length > 0 ? null : 'Password is required'),
+      email: FormValidationUtils.validateEmail,
+      password: FormValidationUtils.validatePassword,
     },
   });
 
