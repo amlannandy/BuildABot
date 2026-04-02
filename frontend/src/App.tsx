@@ -1,6 +1,7 @@
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 
 import { MantineProvider, createTheme } from '@mantine/core';
+import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -40,20 +41,22 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <MantineProvider theme={theme} defaultColorScheme="dark">
-        <Notifications />
-        <AuthProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route element={<PrivateRoute />}>
-                <Route path={ROUTES.HOME} element={<Home />} />
-              </Route>
-              <Route element={<GuestRoute />}>
-                <Route path={ROUTES.LOGIN} element={<Login />} />
-                <Route path={ROUTES.REGISTER} element={<Register />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </AuthProvider>
+        <ModalsProvider>
+          <Notifications />
+          <AuthProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route element={<PrivateRoute />}>
+                  <Route path={ROUTES.HOME} element={<Home />} />
+                </Route>
+                <Route element={<GuestRoute />}>
+                  <Route path={ROUTES.LOGIN} element={<Login />} />
+                  <Route path={ROUTES.REGISTER} element={<Register />} />
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </AuthProvider>
+        </ModalsProvider>
       </MantineProvider>
     </QueryClientProvider>
   );
