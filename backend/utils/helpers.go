@@ -2,6 +2,8 @@ package utils
 
 import (
 	"build-a-bot/dto"
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"net/http"
 	"time"
@@ -42,10 +44,11 @@ func BuildErrorResponse(w http.ResponseWriter, status int, msgs ...string) {
 }
 
 func GenerateAPIKey() (*string, bool) {
-	key, err := jwt.New(jwt.SigningMethodHS256).SignedString([]byte(os.Getenv("API_KEY_SECRET")))
-	if err != nil {
+	bytes := make([]byte, 32)
+	if _, err := rand.Read(bytes); err != nil {
 		LogError("Failed to generate API key: %v", err)
 		return nil, false
 	}
+	key := hex.EncodeToString(bytes)
 	return &key, true
 }
