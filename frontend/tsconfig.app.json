@@ -31,7 +31,8 @@
       "@components/*": ["./src/components/*"],
       "@constants/*": ["./src/constants/*"],
       "@hooks/*": ["./src/hooks/*"],
-      "@pages/*": ["./src/pages/*"]
+      "@pages/*": ["./src/pages/*"],
+      "@dto/*": ["./src/types/*"]
     }
   },
   "include": ["src"]

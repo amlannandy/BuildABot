@@ -15,6 +15,7 @@ type Config struct {
 	DatabaseName     string
 	Port             string
 	JWTSecret        string
+	AllowedOrigin    string
 }
 
 func Load() *Config {
@@ -29,6 +30,7 @@ func Load() *Config {
 		DatabaseName:     utils.GetEnvironmentVariable("DB_NAME"),
 		Port:             utils.GetEnvironmentVariable("PORT"),
 		JWTSecret:        utils.GetEnvironmentVariable("JWT_SECRET"),
+		AllowedOrigin:    utils.GetEnvironmentVariable("ALLOWED_ORIGIN"),
 	}
 }
 

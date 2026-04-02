@@ -25,6 +25,8 @@ import (
 
 	_ "build-a-bot/docs"
 
+	"build-a-bot/middleware"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -63,7 +65,7 @@ func main() {
 	// Configure HTTP server
 	srv := &http.Server{
 		Addr:         ":" + cfg.Port,
-		Handler:      r,
+		Handler:      middleware.CORS(cfg.AllowedOrigin)(r),
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 15 * time.Second,
 		IdleTimeout:  60 * time.Second,
