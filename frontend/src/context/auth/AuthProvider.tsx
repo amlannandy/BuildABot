@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 
 import { useQueryClient } from '@tanstack/react-query';
 
+import { LOCAL_STORAGE_KEYS } from '@constants/localStorage';
 import { REACT_QUERY_KEYS } from '@constants/reactQueryKeys';
 import { AuthContext } from '@context/auth/context';
 import { useGetCurrentUser } from '@hooks/auth/useGetCurrentUser';
@@ -13,7 +14,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const user = data?.data ?? null;
 
   function logout() {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.AUTH_TOKEN);
     queryClient.removeQueries({ queryKey: [REACT_QUERY_KEYS.GET_CURRENT_USER] });
   }
 

@@ -4,6 +4,8 @@ import { MantineProvider, createTheme } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+import GuestRoute from '@components/GuestRoute';
+import PrivateRoute from '@components/PrivateRoute';
 import { ROUTES } from '@constants/routes';
 import { AuthProvider } from '@context/auth';
 import Home from '@pages/Home';
@@ -42,9 +44,13 @@ function App() {
         <AuthProvider>
           <BrowserRouter>
             <Routes>
-              <Route path={ROUTES.HOME} element={<Home />} />
-              <Route path={ROUTES.LOGIN} element={<Login />} />
-              <Route path={ROUTES.REGISTER} element={<Register />} />
+              <Route element={<PrivateRoute />}>
+                <Route path={ROUTES.HOME} element={<Home />} />
+              </Route>
+              <Route element={<GuestRoute />}>
+                <Route path={ROUTES.LOGIN} element={<Login />} />
+                <Route path={ROUTES.REGISTER} element={<Register />} />
+              </Route>
             </Routes>
           </BrowserRouter>
         </AuthProvider>

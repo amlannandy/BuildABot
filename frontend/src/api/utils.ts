@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { LOCAL_STORAGE_KEYS } from '@constants/localStorage';
+
 import type { ApiErrorResponse } from '../types/api';
 
 export function ApiErrorHandler(error: unknown): ApiErrorResponse {
@@ -10,7 +12,7 @@ export function ApiErrorHandler(error: unknown): ApiErrorResponse {
 }
 
 export function handleAuthenticationSuccess(token: string) {
-  localStorage.setItem('authToken', token);
+  localStorage.setItem(LOCAL_STORAGE_KEYS.AUTH_TOKEN, token);
   // Set the token in axios default headers for future requests
   axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }
