@@ -21,11 +21,11 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 
-import CreateChatBotModal from '@components/CreateChatBotModal/CreateChatBotModal';
 import type { ApiErrorResponse } from '@dto/api';
 import type { ChatBot } from '@dto/chatbot';
 import { useDeleteChatBot } from '@hooks/chatbots/useDeleteChatBot';
 import { useListChatBots } from '@hooks/chatbots/useListChatBots';
+import CreateChatBotModal from '@pages/ChatBotList/CreateChatBotModal/CreateChatBotModal';
 
 const PAGE_LIMIT = 10;
 
