@@ -76,7 +76,7 @@ export default defineConfig([
               position: 'after',
             },
             {
-              pattern: '@{api,assets,components,constants,hooks,pages,dto,utils}/**',
+              pattern: '@{api,assets,components,constants,context,hooks,pages,dto,utils}/**',
               group: 'internal',
             },
             {

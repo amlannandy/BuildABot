@@ -18,6 +18,7 @@ export default defineConfig({
       '@assets': '/src/assets',
       '@components': '/src/components',
       '@constants': '/src/constants',
+      '@context': '/src/context',
       '@hooks': '/src/hooks',
       '@pages': '/src/pages',
       '@dto': '/src/types',
