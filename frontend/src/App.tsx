@@ -47,7 +47,7 @@ function App() {
             <AuthProvider>
               <Routes>
                 <Route element={<PrivateRoute />}>
-                  <Route path={ROUTES.HOME} element={<Home />} />
+                  <Route path="/*" element={<Home />} />
                 </Route>
                 <Route element={<GuestRoute />}>
                   <Route path={ROUTES.LOGIN} element={<Login />} />

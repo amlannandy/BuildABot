@@ -7,6 +7,7 @@ import { AppShell, Avatar, Group, Image, Menu, Text } from '@mantine/core';
 import logo from '@assets/logo.png';
 import { ROUTES } from '@constants/routes';
 import { useAuth } from '@context/auth';
+import ChatbotDetails from '@pages/ChatBotDetails';
 import ChatBotList from '@pages/ChatBotList';
 
 const Home = () => {
@@ -45,6 +46,7 @@ const Home = () => {
       </AppShell.Header>
       <AppShell.Main>
         <Routes>
+          <Route element={<ChatbotDetails />} path={ROUTES.CHATBOT_DETAILS} />
           <Route element={<ChatBotList />} path={ROUTES.HOME} />
         </Routes>
       </AppShell.Main>

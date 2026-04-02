@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { IconEdit, IconPlus, IconRobot, IconTrash } from '@tabler/icons-react';
+import { IconEdit, IconExternalLink, IconPlus, IconRobot, IconTrash } from '@tabler/icons-react';
 
 import {
   ActionIcon,
@@ -20,22 +20,27 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
+import { useQueryClient } from '@tanstack/react-query';
 
+import { REACT_QUERY_KEYS } from '@constants/reactQueryKeys';
+import { ROUTES } from '@constants/routes';
 import type { ApiErrorResponse } from '@dto/api';
 import type { ChatBot } from '@dto/chatbot';
 import { useDeleteChatBot } from '@hooks/chatbots/useDeleteChatBot';
 import { useListChatBots } from '@hooks/chatbots/useListChatBots';
+import useSafeNavigate from '@hooks/useSafeNavigate';
 import CreateChatBotModal from '@pages/ChatBotList/CreateChatBotModal/CreateChatBotModal';
 
 const PAGE_LIMIT = 10;
 
 const ChatBotList = () => {
   const [page, setPage] = useState(1);
-
   const [selectedChatBot, setSelectedChatBot] = useState<ChatBot | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  const { safeNavigate } = useSafeNavigate();
+  const queryClient = useQueryClient();
   const { data, isLoading } = useListChatBots({ page, limit: PAGE_LIMIT, filters: {} });
   const { mutate: deleteChatBot, isPending: isDeleting } = useDeleteChatBot();
 
@@ -65,12 +70,13 @@ const ChatBotList = () => {
     if (!selectedChatBot) return;
     deleteChatBot(selectedChatBot.id, {
       onSuccess: () => {
+        void queryClient.invalidateQueries({ queryKey: [REACT_QUERY_KEYS.LIST_CHATBOTS] });
         notifications.show({
           title: 'Chatbot deleted',
           message: `${selectedChatBot.name} has been deleted.`,
           color: 'green',
         });
-        setSelectedChatBot(null);
+        handleCreateModalClose();
       },
       onError: (error: ApiErrorResponse) => {
         notifications.show({
@@ -81,6 +87,10 @@ const ChatBotList = () => {
         setSelectedChatBot(null);
       },
     });
+  };
+
+  const goToChatBotDetails = (chatbotId: number) => {
+    safeNavigate(ROUTES.CHATBOT_DETAILS.replace(':id', chatbotId.toString()));
   };
 
   const rows = chatbots.map((chatbot) => (
@@ -110,6 +120,16 @@ const ChatBotList = () => {
       </Table.Td>
       <Table.Td w={100}>
         <Group gap="xs" wrap="nowrap">
+          <ActionIcon
+            variant="subtle"
+            color="gray"
+            size="sm"
+            onClick={() => {
+              goToChatBotDetails(chatbot.id);
+            }}
+          >
+            <IconExternalLink size={15} />
+          </ActionIcon>
           <ActionIcon
             variant="subtle"
             color="gray"
@@ -224,7 +244,7 @@ const ChatBotList = () => {
           cannot be undone.
         </Text>
         <Group justify="flex-end" mt="xl" gap="sm">
-          <Button variant="default" onClick={handleConfirmDelete}>
+          <Button variant="default" onClick={handleDeleteModalClose}>
             Cancel
           </Button>
           <Button color="red" loading={isDeleting} onClick={handleConfirmDelete}>
