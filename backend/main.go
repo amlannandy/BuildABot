@@ -17,7 +17,10 @@ import (
 	"time"
 
 	"build-a-bot/config"
+	"build-a-bot/embedding"
+	"build-a-bot/engine"
 	"build-a-bot/handlers"
+	"build-a-bot/llm"
 	"build-a-bot/models"
 	"build-a-bot/repository"
 	"build-a-bot/router"
@@ -27,6 +30,7 @@ import (
 
 	"build-a-bot/middleware"
 
+	"github.com/anthropics/anthropic-sdk-go"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -48,16 +52,29 @@ func main() {
 
 	// Auto-migrate models
 	// Note: use golang-migrate or Atlas for production migrations
-	if err := db.AutoMigrate(&models.User{}, &models.ChatBot{}); err != nil {
+	if err := db.AutoMigrate(
+		&models.User{},
+		&models.ChatBot{},
+		&models.KnowledgeBase{},
+		&models.KnowledgeChunk{},
+		&models.Session{},
+	); err != nil {
 		utils.LogFatal("Auto-migration failed: %v", err)
 	}
 
 	// Wire up dependencies
 	userRepo := repository.NewUserRepository(db)
 	chatBotRepo := repository.NewChatBotRepository(db)
+	knowledgeBaseRepo := repository.NewKnowledgeBaseRepository(db)
+	sessionRepo := repository.NewSessionRepository(db)
+
+	llmClient := llm.NewAnthropicClient(cfg.AnthropicAPIKey, anthropic.ModelClaudeSonnet4_6)
+	embeddingClient := embedding.NewOpenAIClient(cfg.OpenAIAPIKey)
+
+	eng := engine.NewEngine(llmClient, embeddingClient, knowledgeBaseRepo, sessionRepo)
 
 	authHandler := handlers.NewAuthHandler(userRepo)
-	chatBotHandler := handlers.NewChatBotHandler(chatBotRepo)
+	chatBotHandler := handlers.NewChatBotHandler(chatBotRepo, eng)
 
 	// Build router
 	r := router.New(authHandler, chatBotHandler)

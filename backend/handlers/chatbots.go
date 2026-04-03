@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"build-a-bot/dto"
+	"build-a-bot/engine"
 	"build-a-bot/middleware"
 	"build-a-bot/models"
 	"build-a-bot/repository"
@@ -15,11 +16,12 @@ import (
 )
 
 type ChatBotHandler struct {
-	repo repository.ChatBotRepository
+	repo   repository.ChatBotRepository
+	engine *engine.Engine
 }
 
-func NewChatBotHandler(repo repository.ChatBotRepository) *ChatBotHandler {
-	return &ChatBotHandler{repo: repo}
+func NewChatBotHandler(repo repository.ChatBotRepository, engine *engine.Engine) *ChatBotHandler {
+	return &ChatBotHandler{repo: repo, engine: engine}
 }
 
 // CreateChatBot godoc
@@ -266,5 +268,58 @@ func (h *ChatBotHandler) DeleteChatBot(w http.ResponseWriter, r *http.Request) {
 
 	utils.BuildJSONResponse(w, http.StatusOK, dto.SuccessResponse[any]{
 		Message: "ChatBot deleted successfully",
+	})
+}
+
+// Chat godoc
+// @Summary      Send a message to a chatbot
+// @Tags         chatbots
+// @Accept       json
+// @Produce      json
+// @Param        id   path     int               true "ChatBot ID"
+// @Param        body body     dto.ChatRequest   true "Chat payload"
+// @Success      200  {object} dto.ChatResponse
+// @Failure      400  {object} dto.ErrorResponse
+// @Failure      404  {object} dto.ErrorResponse
+// @Failure      500  {object} dto.ErrorResponse
+// @Router       /chatbots/{id}/chat [post]
+func (h *ChatBotHandler) Chat(w http.ResponseWriter, r *http.Request) {
+	idStr := mux.Vars(r)["id"]
+	id, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil {
+		utils.BuildErrorResponse(w, http.StatusBadRequest, "Invalid chatbot ID")
+		return
+	}
+
+	var req dto.ChatRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		utils.BuildErrorResponse(w, http.StatusBadRequest, "Invalid request body")
+		return
+	}
+
+	if req.Message == "" {
+		utils.BuildErrorResponse(w, http.StatusBadRequest, "Message is required")
+		return
+	}
+	if req.UserIdentifier == "" {
+		utils.BuildErrorResponse(w, http.StatusBadRequest, "User identifier is required")
+		return
+	}
+
+	chatbot, err := h.repo.FindByID(uint(id))
+	if err != nil {
+		utils.BuildErrorResponse(w, http.StatusNotFound, "Chatbot not found")
+		return
+	}
+
+	reply, err := h.engine.Run(r.Context(), req.Message, chatbot, req.UserIdentifier)
+	if err != nil {
+		utils.BuildErrorResponse(w, http.StatusInternalServerError, "Failed to process message")
+		return
+	}
+
+	utils.BuildJSONResponse(w, http.StatusOK, dto.SuccessResponse[dto.ChatResponse]{
+		Data:    dto.ChatResponse{Reply: reply},
+		Message: "Message processed successfully",
 	})
 }

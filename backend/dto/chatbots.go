@@ -20,3 +20,12 @@ type ChatBotFilters struct {
 }
 
 type ListChatBotsRequest = ListRequest[ChatBotFilters]
+
+type ChatRequest struct {
+	Message        string `json:"message"`
+	UserIdentifier string `json:"user_identifier"`
+}
+
+type ChatResponse struct {
+	Reply string `json:"reply"`
+}
