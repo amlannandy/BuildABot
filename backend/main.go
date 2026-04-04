@@ -20,6 +20,7 @@ import (
 	"build-a-bot/embedding"
 	"build-a-bot/engine"
 	"build-a-bot/handlers"
+	"build-a-bot/integrations"
 	"build-a-bot/llm"
 	"build-a-bot/models"
 	"build-a-bot/repository"
@@ -73,11 +74,14 @@ func main() {
 
 	eng := engine.NewEngine(llmClient, embeddingClient, knowledgeBaseRepo, sessionRepo)
 
+	whatsAppClient := integrations.NewMetaClient(cfg.WhatsAppAPIToken)
+
 	authHandler := handlers.NewAuthHandler(userRepo)
 	chatBotHandler := handlers.NewChatBotHandler(chatBotRepo, eng)
+	whatsAppHandler := handlers.NewIntegrationsHandler(chatBotRepo, eng, whatsAppClient, cfg.WhatsAppVerifyToken)
 
 	// Build router
-	r := router.New(authHandler, chatBotHandler)
+	r := router.New(authHandler, chatBotHandler, whatsAppHandler)
 
 	// Configure HTTP server
 	srv := &http.Server{

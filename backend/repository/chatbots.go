@@ -18,6 +18,7 @@ type ChatBotRepository interface {
 	FindAllByUserID(userID uint) ([]models.ChatBot, error)
 	FindPaginated(params ChatBotListParams) ([]models.ChatBot, int64, error)
 	FindByID(id uint) (*models.ChatBot, error)
+	FindByWhatsAppID(phoneNumberID string) (*models.ChatBot, error)
 	Create(chatBot *models.ChatBot) (*models.ChatBot, error)
 	Update(chatBot *models.ChatBot) (*models.ChatBot, error)
 	Delete(id uint) error
@@ -78,6 +79,15 @@ func (r *chatBotRepo) Create(chatBot *models.ChatBot) (*models.ChatBot, error) {
 func (r *chatBotRepo) Update(chatBot *models.ChatBot) (*models.ChatBot, error) {
 	result := r.db.Save(chatBot)
 	return chatBot, result.Error
+}
+
+func (r *chatBotRepo) FindByWhatsAppID(phoneNumberID string) (*models.ChatBot, error) {
+	var chatBot models.ChatBot
+	result := r.db.Where("integrations->'whatsapp'->>'phone_number_id' = ?", phoneNumberID).First(&chatBot)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &chatBot, nil
 }
 
 func (r *chatBotRepo) Delete(id uint) error {

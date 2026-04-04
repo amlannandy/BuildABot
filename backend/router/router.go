@@ -10,7 +10,7 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
-func New(authHandler *handlers.AuthHandler, chatBotHandler *handlers.ChatBotHandler) http.Handler {
+func New(authHandler *handlers.AuthHandler, chatBotHandler *handlers.ChatBotHandler, whatsAppHandler *handlers.IntegrationsHandler) http.Handler {
 	r := mux.NewRouter()
 	r.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
@@ -21,6 +21,7 @@ func New(authHandler *handlers.AuthHandler, chatBotHandler *handlers.ChatBotHand
 
 	mountAuthRoutes(api, authHandler)
 	mountChatBotRoutes(api, chatBotHandler)
+	mountWhatsAppRoutes(api, whatsAppHandler)
 
 	return r
 }
