@@ -157,7 +157,7 @@ const ChatBotList = () => {
 
   return (
     <>
-      <Stack gap="xl" maw={1000} mx="auto">
+      <Stack gap="xl" maw={1200} mx="auto">
         <Group justify="space-between" align="flex-end">
           <Box>
             <Title order={2}>Your Chatbots</Title>

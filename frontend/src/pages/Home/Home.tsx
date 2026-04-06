@@ -17,7 +17,7 @@ const Home = () => {
     <AppShell header={{ height: 60 }} padding="xl">
       <AppShell.Header>
         <Group h="100%" px="xl" justify="center">
-          <Group w="100%" maw={1000} justify="space-between">
+          <Group w="100%" maw={1200} justify="space-between">
             <Group gap="xs">
               <Image src={logo} w={32} h={32} fit="cover" />
               <Text fw={700} size="lg">
