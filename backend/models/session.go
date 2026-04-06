@@ -13,7 +13,7 @@ type HistoryMessage struct {
 
 type Session struct {
 	ID             uint           `gorm:"primaryKey" json:"id"`
-	ChatBotID      uint           `gorm:"not null;index" json:"chatbot_id"`
+	ChatBotID      uint           `gorm:"not null;index" json:"chat_bot_id"`
 	UserIdentifier string         `gorm:"not null;index" json:"user_identifier"`
 	CurrentNodeID  *string        `gorm:"type:text" json:"current_node_id"`
 	Variables      *string        `gorm:"type:jsonb" json:"variables"`

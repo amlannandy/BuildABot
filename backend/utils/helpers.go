@@ -43,6 +43,14 @@ func BuildErrorResponse(w http.ResponseWriter, status int, msgs ...string) {
 	json.NewEncoder(w).Encode(dto.ErrorResponse{Errors: msgs})
 }
 
+func RawToString(raw json.RawMessage) *string {
+	if len(raw) == 0 || string(raw) == "null" {
+		return nil
+	}
+	s := string(raw)
+	return &s
+}
+
 func GenerateAPIKey() (*string, bool) {
 	bytes := make([]byte, 32)
 	if _, err := rand.Read(bytes); err != nil {

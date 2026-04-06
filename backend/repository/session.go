@@ -32,7 +32,7 @@ func (r *sessionRepo) Create(session *models.Session) (*models.Session, error) {
 func (r *sessionRepo) FindActive(chatBotID uint, userIdentifier string) (*models.Session, error) {
 	var session models.Session
 	result := r.db.
-		Where("chatbot_id = ? AND user_identifier = ? AND expires_at > ?", chatBotID, userIdentifier, time.Now()).
+		Where("chat_bot_id = ? AND user_identifier = ? AND expires_at > ?", chatBotID, userIdentifier, time.Now()).
 		First(&session)
 
 	if result.Error == gorm.ErrRecordNotFound {

@@ -211,7 +211,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.PaginatedResponse-models_ChatBot"
+                            "$ref": "#/definitions/dto.SuccessResponse-dto_PaginatedResponse-models_ChatBot"
                         }
                     },
                     "400": {
@@ -383,6 +383,64 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/chatbots/{id}/chat": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chatbots"
+                ],
+                "summary": "Send a message to a chatbot",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ChatBot ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Chat payload",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ChatRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ChatResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -393,6 +451,25 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.ChatRequest": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "user_identifier": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.ChatResponse": {
+            "type": "object",
+            "properties": {
+                "reply": {
                     "type": "string"
                 }
             }
@@ -520,6 +597,17 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.SuccessResponse-dto_PaginatedResponse-models_ChatBot": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.PaginatedResponse-models_ChatBot"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.SuccessResponse-models_ChatBot": {
             "type": "object",
             "properties": {
@@ -587,6 +675,9 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "integer"
+                },
+                "integrations": {
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"

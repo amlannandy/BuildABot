@@ -43,7 +43,6 @@ func (h *ChatBotHandler) CreateChatBot(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Get user ID from context (set by auth middleware)
 	userId := uint(r.Context().Value(middleware.UserIDKey).(float64))
 
 	apiKey, ok := utils.GenerateAPIKey()
@@ -57,8 +56,8 @@ func (h *ChatBotHandler) CreateChatBot(w http.ResponseWriter, r *http.Request) {
 		Name:        req.Name,
 		Description: req.Description,
 		APIKey:      *apiKey,
-		Workflow:    req.Workflow,
-		Config:      req.Config,
+		Workflow:    utils.RawToString(req.Workflow),
+		Config:      utils.RawToString(req.Config),
 	}
 
 	created, err := h.repo.Create(chatBot)
@@ -145,9 +144,8 @@ func (h *ChatBotHandler) GetChatBot(w http.ResponseWriter, r *http.Request) {
 		utils.BuildErrorResponse(w, http.StatusBadRequest, "Invalid chatbot ID")
 		return
 	}
-	chatBotId := uint(id)
 
-	chatBot, err := h.repo.FindByID(chatBotId)
+	chatBot, err := h.repo.FindByID(uint(id))
 	if err != nil {
 		utils.BuildErrorResponse(w, http.StatusNotFound, "ChatBot not found")
 		return
@@ -187,7 +185,6 @@ func (h *ChatBotHandler) UpdateChatBot(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Fetch chatbot to verify ownership and existence
 	chatBot, err := h.repo.FindByID(chatBotId)
 	if err != nil {
 		utils.BuildErrorResponse(w, http.StatusNotFound, "ChatBot not found")
@@ -200,7 +197,6 @@ func (h *ChatBotHandler) UpdateChatBot(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Update fields if provided
 	if req.Name != nil {
 		chatBot.Name = *req.Name
 	}
@@ -208,10 +204,10 @@ func (h *ChatBotHandler) UpdateChatBot(w http.ResponseWriter, r *http.Request) {
 		chatBot.Description = req.Description
 	}
 	if req.Workflow != nil {
-		chatBot.Workflow = req.Workflow
+		chatBot.Workflow = utils.RawToString(req.Workflow)
 	}
 	if req.Config != nil {
-		chatBot.Config = req.Config
+		chatBot.Config = utils.RawToString(req.Config)
 	}
 
 	updated, err := h.repo.Update(chatBot)
@@ -248,7 +244,6 @@ func (h *ChatBotHandler) DeleteChatBot(w http.ResponseWriter, r *http.Request) {
 
 	userId := uint(r.Context().Value(middleware.UserIDKey).(float64))
 
-	// Fetch chatbot to verify ownership
 	chatBot, err := h.repo.FindByID(chatBotId)
 	if err != nil {
 		utils.BuildErrorResponse(w, http.StatusNotFound, "ChatBot not found")
@@ -260,8 +255,7 @@ func (h *ChatBotHandler) DeleteChatBot(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.repo.Delete(chatBotId)
-	if err != nil {
+	if err = h.repo.Delete(chatBotId); err != nil {
 		utils.BuildErrorResponse(w, http.StatusInternalServerError, "Failed to delete chatbot")
 		return
 	}
@@ -276,9 +270,9 @@ func (h *ChatBotHandler) DeleteChatBot(w http.ResponseWriter, r *http.Request) {
 // @Tags         chatbots
 // @Accept       json
 // @Produce      json
-// @Param        id   path     int               true "ChatBot ID"
-// @Param        body body     dto.ChatRequest   true "Chat payload"
-// @Success      200  {object} dto.ChatResponse
+// @Param        id   path     int             true "ChatBot ID"
+// @Param        body body     dto.ChatRequest true "Chat payload"
+// @Success      200  {object} dto.SuccessResponse[dto.ChatResponse]
 // @Failure      400  {object} dto.ErrorResponse
 // @Failure      404  {object} dto.ErrorResponse
 // @Failure      500  {object} dto.ErrorResponse
@@ -314,7 +308,11 @@ func (h *ChatBotHandler) Chat(w http.ResponseWriter, r *http.Request) {
 
 	reply, err := h.engine.Run(r.Context(), req.Message, chatbot, req.UserIdentifier)
 	if err != nil {
-		utils.BuildErrorResponse(w, http.StatusInternalServerError, "Failed to process message")
+		utils.LogError("Chatbot processing error: %v", err)
+		utils.BuildJSONResponse(w, http.StatusOK, dto.SuccessResponse[dto.ChatResponse]{
+			Data:    dto.ChatResponse{Reply: "Sorry, something went wrong while processing your message."},
+			Message: "Message processed with errors",
+		})
 		return
 	}
 

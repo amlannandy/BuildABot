@@ -5,6 +5,7 @@ import (
 	"build-a-bot/llm"
 	"build-a-bot/models"
 	"build-a-bot/repository"
+	"build-a-bot/utils"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -69,19 +70,32 @@ func (e *Engine) Run(ctx context.Context, input string, chatbot *models.ChatBot,
 		}
 	}
 
-	// --- Find the node to execute ---
-	var node *WorkflowNode
-	isSessionContinuation := session != nil && session.CurrentNodeID != nil
+	// Always detect intent first. If a clear intent is found, honor it even mid-session
+	// so the user can switch topics. Only continue the active session when the LLM
+	// returns "fallback" (i.e. the message is a reply within the current flow).
+	intent, err := DetectIntent(ctx, e.llm, input, workflow.Intents())
+	if err != nil {
+		return "", fmt.Errorf("engine: intent detection failed: %w", err)
+	}
+	utils.LogInfo("Intent: %v", intent)
 
-	if isSessionContinuation {
+	var node *WorkflowNode
+
+	// Continue the active flow — user is responding within it (e.g. answering a collect_input prompt)
+	continueCurrentSession := session != nil && session.CurrentNodeID != nil && intent == "fallback"
+
+	if continueCurrentSession {
 		node = workflow.FindByID(*session.CurrentNodeID)
 		if node == nil {
 			return "", fmt.Errorf("engine: session references unknown node %q", *session.CurrentNodeID)
 		}
 
-		// If this node was waiting for user input, store it now and advance to next node
 		if node.Action.Type == ActionTypeCollectInput {
-			variables[node.Action.Variable] = input
+			extracted, err := e.extractValue(ctx, node.Action.Prompt, node.Action.Variable, input)
+			if err != nil {
+				return "", fmt.Errorf("engine: value extraction failed: %w", err)
+			}
+			variables[node.Action.Variable] = extracted
 			if node.NextNodeID != "" {
 				next := workflow.FindByID(node.NextNodeID)
 				if next == nil {
@@ -91,11 +105,14 @@ func (e *Engine) Run(ctx context.Context, input string, chatbot *models.ChatBot,
 			}
 		}
 	} else {
-		// No active session — detect intent and find entry node
-		intents := workflow.Intents()
-		intent, err := DetectIntent(ctx, e.llm, input, intents)
-		if err != nil {
-			return "", fmt.Errorf("engine: intent detection failed: %w", err)
+		// If user switched topics, clear the session
+		if session != nil {
+			if err := e.sessionRepo.Delete(session.ID); err != nil {
+				return "", fmt.Errorf("engine: failed to clear session: %w", err)
+			}
+			session = nil
+			variables = map[string]string{}
+			history = []llm.Message{}
 		}
 
 		node = workflow.FindByIntent(intent)
@@ -140,8 +157,21 @@ func (e *Engine) Run(ctx context.Context, input string, chatbot *models.ChatBot,
 }
 
 // updateSession saves, advances, or deletes the session based on the node's outcome.
+// extractValue uses the LLM to pull a specific value out of a free-form user reply.
+// e.g. prompt="What is your order ID?" + reply="My order is 123" → "123"
+func (e *Engine) extractValue(ctx context.Context, prompt, variable, input string) (string, error) {
+	messages := []llm.Message{{
+		Role: llm.RoleUser,
+		Content: fmt.Sprintf(
+			"You asked the user: %q\nThe user replied: %q\n\nExtract only the specific value for %q from the reply. Return just the value, nothing else.",
+			prompt, input, variable,
+		),
+	}}
+	return e.llm.Chat(ctx, messages)
+}
+
 func (e *Engine) updateSession(
-	ctx context.Context,
+	_ context.Context,
 	session *models.Session,
 	chatBotID uint,
 	userIdentifier string,

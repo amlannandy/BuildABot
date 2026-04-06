@@ -1,17 +1,19 @@
 package dto
 
+import "encoding/json"
+
 type CreateChatBotRequest struct {
-	Name        string  `json:"name" validate:"required"`
-	Description *string `json:"description"`
-	Workflow    *string `json:"workflow"`
-	Config      *string `json:"config"`
+	Name        string          `json:"name" validate:"required"`
+	Description *string         `json:"description"`
+	Workflow    json.RawMessage `json:"workflow"`
+	Config      json.RawMessage `json:"config"`
 }
 
 type UpdateChatBotRequest struct {
-	Name        *string `json:"name" validate:"required_without_all=Description Workflow Config"`
-	Description *string `json:"description"`
-	Workflow    *string `json:"workflow"`
-	Config      *string `json:"config"`
+	Name        *string         `json:"name" validate:"required_without_all=Description Workflow Config"`
+	Description *string         `json:"description"`
+	Workflow    json.RawMessage `json:"workflow"`
+	Config      json.RawMessage `json:"config"`
 }
 
 type ChatBotFilters struct {
