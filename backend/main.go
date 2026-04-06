@@ -31,7 +31,6 @@ import (
 
 	"build-a-bot/middleware"
 
-	"github.com/anthropics/anthropic-sdk-go"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -69,7 +68,7 @@ func main() {
 	knowledgeBaseRepo := repository.NewKnowledgeBaseRepository(db)
 	sessionRepo := repository.NewSessionRepository(db)
 
-	llmClient := llm.NewAnthropicClient(cfg.AnthropicAPIKey, anthropic.ModelClaudeSonnet4_6)
+	llmClient := llm.NewOpenAIClient(cfg.OpenAIAPIKey, "gpt-4o-mini")
 	embeddingClient := embedding.NewOpenAIClient(cfg.OpenAIAPIKey)
 
 	eng := engine.NewEngine(llmClient, embeddingClient, knowledgeBaseRepo, sessionRepo)

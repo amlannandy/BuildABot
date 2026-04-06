@@ -3,7 +3,6 @@ module build-a-bot
 go 1.25.1
 
 require (
-	github.com/anthropics/anthropic-sdk-go v1.29.0
 	github.com/aws/aws-sdk-go-v2 v1.41.5
 	github.com/aws/aws-sdk-go-v2/credentials v1.19.13
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.98.0

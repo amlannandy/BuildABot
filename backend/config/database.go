@@ -16,7 +16,6 @@ type Config struct {
 	Port                string
 	JWTSecret           string
 	AllowedOrigin       string
-	AnthropicAPIKey     string
 	OpenAIAPIKey        string
 	S3Bucket            string
 	S3Region            string
@@ -39,7 +38,6 @@ func Load() *Config {
 		Port:                utils.GetEnvironmentVariable("PORT"),
 		JWTSecret:           utils.GetEnvironmentVariable("JWT_SECRET"),
 		AllowedOrigin:       utils.GetEnvironmentVariable("ALLOWED_ORIGIN"),
-		AnthropicAPIKey:     utils.GetEnvironmentVariable("ANTHROPIC_API_KEY"),
 		OpenAIAPIKey:        utils.GetEnvironmentVariable("OPENAI_API_KEY"),
 		S3Bucket:            utils.GetEnvironmentVariable("S3_BUCKET"),
 		S3Region:            utils.GetEnvironmentVariable("S3_REGION"),
