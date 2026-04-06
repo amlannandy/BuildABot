@@ -1,9 +1,10 @@
 import { useState } from 'react';
 
-import { IconCheck, IconCopy, IconEye, IconEyeOff } from '@tabler/icons-react';
-
 import { ActionIcon, Group, Stack, Text, TextInput, Tooltip } from '@mantine/core';
+import { IconCheck, IconCopy, IconEye, IconEyeOff } from '@tabler/icons-react';
 import { useClipboard } from '@mantine/hooks';
+
+import styles from './styles.module.scss';
 
 interface SecretKeyFieldProps {
   label: string;
@@ -18,14 +19,14 @@ const SecretKeyField = ({ label, value }: SecretKeyFieldProps) => {
 
   return (
     <Stack gap={6}>
-      <Text size="xs" c="dimmed" tt="uppercase" fw={600} style={{ letterSpacing: '0.05em' }}>
+      <Text size="xs" c="dimmed" tt="uppercase" fw={600} className={styles.label}>
         {label}
       </Text>
       <Group gap="xs" align="center">
         <TextInput
           value={visible ? value : masked}
           readOnly
-          style={{ flex: 1 }}
+          className={styles.input}
           styles={{ input: { fontFamily: 'monospace', fontSize: 13 } }}
         />
         <Tooltip label={visible ? 'Hide' : 'Show'}>

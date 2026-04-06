@@ -71,7 +71,7 @@ export default defineConfig([
               position: 'before',
             },
             {
-              pattern: '{@mantine/**,@tanstack/**}',
+              pattern: '{@mantine/**,@tanstack/**,@tabler/**}',
               group: 'external',
               position: 'after',
             },

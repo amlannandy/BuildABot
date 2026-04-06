@@ -1,7 +1,5 @@
 import { useParams } from 'react-router-dom';
 
-import { IconArrowLeft, IconPlugConnected, IconSitemap } from '@tabler/icons-react';
-
 import {
   Box,
   Button,
@@ -15,6 +13,7 @@ import {
   Text,
   Title,
 } from '@mantine/core';
+import { IconArrowLeft, IconPlugConnected, IconSitemap } from '@tabler/icons-react';
 
 import ChatFlow from '@components/ChatFlow';
 import SecretKeyField from '@components/SecretKeyField';

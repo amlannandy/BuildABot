@@ -5,20 +5,15 @@ import { Box, Button, Center, Stack, Text } from '@mantine/core';
 import { ROUTES } from '@constants/routes';
 import useSafeNavigate from '@hooks/useSafeNavigate';
 
+import styles from './styles.module.scss';
+
 const ChatbotNotFound = () => {
   const { safeNavigate } = useSafeNavigate();
 
   return (
     <Center h={400}>
       <Stack align="center" gap="md" maw={320}>
-        <Box
-          style={{
-            background: 'var(--mantine-color-dark-5)',
-            borderRadius: '50%',
-            padding: 20,
-            display: 'flex',
-          }}
-        >
+        <Box className={styles.iconCircle}>
           <IconRobotOff size={36} color="var(--mantine-color-gray-5)" />
         </Box>
         <Stack align="center" gap={4}>

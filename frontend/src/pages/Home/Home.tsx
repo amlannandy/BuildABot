@@ -10,6 +10,8 @@ import { useAuth } from '@context/auth';
 import ChatbotDetails from '@pages/ChatBotDetails';
 import ChatBotList from '@pages/ChatBotList';
 
+import styles from './styles.module.scss';
+
 const Home = () => {
   const { user, logout } = useAuth();
 
@@ -26,7 +28,7 @@ const Home = () => {
             </Group>
             <Menu shadow="md" width={180}>
               <Menu.Target>
-                <Group gap="xs" style={{ cursor: 'pointer' }}>
+                <Group gap="xs" className={styles.userMenuTarget}>
                   <Avatar size="sm" radius="xl" color="gray" variant="filled">
                     {user?.name.charAt(0).toUpperCase()}
                   </Avatar>
