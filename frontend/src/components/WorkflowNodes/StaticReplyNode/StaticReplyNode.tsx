@@ -1,20 +1,37 @@
-import { type NodeProps, type Node } from '@xyflow/react';
+import { type Node } from '@xyflow/react';
 
-import { Text } from '@mantine/core';
+import { Stack, TextInput } from '@mantine/core';
 import { IconMessage } from '@tabler/icons-react';
 
 import BaseNode from '../BaseNode';
 import { type StaticReplyNodeData } from '../types';
 
-type StaticReplyNodeType = Node<StaticReplyNodeData, 'static_reply'>;
+type StaticReplyNodeTypeProps = Node<StaticReplyNodeData, 'static_reply'>;
 
-const StaticReplyNode = ({ data, selected }: NodeProps<StaticReplyNodeType>) => (
+const StaticReplyNode: React.FC<StaticReplyNodeTypeProps> = ({ data, selected }) => (
   <BaseNode title="Static Reply" color="green" icon={<IconMessage size={14} />} selected={selected}>
-    {data.message ? (
-      <Text size="xs" c="dimmed" lineClamp={2}>{data.message}</Text>
-    ) : (
-      <Text size="xs" c="dimmed" fs="italic">No message set</Text>
-    )}
+    <Stack gap="xs" className="nodrag">
+      <TextInput
+        label="Intent"
+        placeholder="e.g. greet_user"
+        description="The intent that triggers this node"
+        size="xs"
+        value={data.intent}
+        onChange={(e) => {
+          data.setIntent(e.currentTarget.value);
+        }}
+      />
+      <TextInput
+        label="Message"
+        placeholder="e.g. Hello! How can I help?"
+        description="Fixed message returned to the user"
+        size="xs"
+        value={data.message}
+        onChange={(e) => {
+          data.setMessage(e.currentTarget.value);
+        }}
+      />
+    </Stack>
   </BaseNode>
 );
 

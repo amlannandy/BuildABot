@@ -28,13 +28,12 @@ import NodePanel from './NodePanel';
 import styles from './styles.module.scss';
 
 const defaultData: Record<string, Record<string, unknown>> = {
-  intent: { intent: '' },
   static_reply: { message: '' },
   collect_input: { prompt: '', variable: '' },
   api_call: { method: 'GET', endpoint: '' },
   knowledge_base: { kbId: 0 },
   llm_generate: {},
-  end_conversation: {},
+  end_conversation: { message: '' },
 };
 
 const WorkflowBuilderInner = () => {

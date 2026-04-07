@@ -9,7 +9,7 @@ import { type KnowledgeBaseNodeData } from '../types';
 type KnowledgeBaseNodeType = Node<KnowledgeBaseNodeData, 'knowledge_base'>;
 
 const KnowledgeBaseNode = ({ data, selected }: NodeProps<KnowledgeBaseNodeType>) => (
-  <BaseNode title="Knowledge Base" color="teal" icon={<IconDatabase size={14} />} selected={selected}>
+  <BaseNode title="Knowledge Base" color="teal" icon={<IconDatabase size={14} />} intent={data.intent} hasInput={!data.intent} selected={selected}>
     {data.kbId ? (
       <Text size="xs" c="dimmed">{data.kbName ?? `Knowledge Base #${data.kbId}`}</Text>
     ) : (

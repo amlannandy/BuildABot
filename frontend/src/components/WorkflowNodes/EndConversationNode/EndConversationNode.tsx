@@ -1,6 +1,6 @@
-import { type NodeProps, type Node } from '@xyflow/react';
+import { type NodeProps, type Node, useReactFlow } from '@xyflow/react';
 
-import { Text } from '@mantine/core';
+import { Textarea } from '@mantine/core';
 import { IconPlayerStop } from '@tabler/icons-react';
 
 import BaseNode from '../BaseNode';
@@ -8,14 +8,25 @@ import { type EndConversationNodeData } from '../types';
 
 type EndConversationNodeType = Node<EndConversationNodeData, 'end_conversation'>;
 
-const EndConversationNode = ({ data, selected }: NodeProps<EndConversationNodeType>) => (
-  <BaseNode title="End Conversation" color="red" icon={<IconPlayerStop size={14} />} hasOutput={false} selected={selected}>
-    {data.message ? (
-      <Text size="xs" c="dimmed" lineClamp={2}>{data.message}</Text>
-    ) : (
-      <Text size="xs" c="dimmed" fs="italic">No farewell message</Text>
-    )}
-  </BaseNode>
-);
+const EndConversationNode = ({ id, data, selected }: NodeProps<EndConversationNodeType>) => {
+  const { updateNodeData } = useReactFlow();
+
+  return (
+    <BaseNode title="End Conversation" color="red" icon={<IconPlayerStop size={14} />} hasOutput={false} selected={selected}>
+      <div className="nodrag">
+        <Textarea
+          label="Farewell message"
+          placeholder="e.g. Thanks for chatting! Goodbye."
+          description="Sent to the user when the conversation ends"
+          size="xs"
+          autosize
+          minRows={2}
+          value={data.message ?? ''}
+          onChange={(e) => { updateNodeData(id, { message: e.currentTarget.value }); }}
+        />
+      </div>
+    </BaseNode>
+  );
+};
 
 export default EndConversationNode;

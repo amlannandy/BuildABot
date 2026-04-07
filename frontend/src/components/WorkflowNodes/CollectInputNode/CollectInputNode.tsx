@@ -1,6 +1,6 @@
-import { type NodeProps, type Node } from '@xyflow/react';
+import { type NodeProps, type Node, useReactFlow } from '@xyflow/react';
 
-import { Badge, Group, Stack, Text } from '@mantine/core';
+import { Stack, TextInput, Textarea } from '@mantine/core';
 import { IconForms } from '@tabler/icons-react';
 
 import BaseNode from '../BaseNode';
@@ -8,18 +8,43 @@ import { type CollectInputNodeData } from '../types';
 
 type CollectInputNodeType = Node<CollectInputNodeData, 'collect_input'>;
 
-const CollectInputNode = ({ data, selected }: NodeProps<CollectInputNodeType>) => (
-  <BaseNode title="Collect Input" color="violet" icon={<IconForms size={14} />} selected={selected}>
-    <Stack gap={4}>
-      <Text size="xs" c="dimmed" lineClamp={2}>{data.prompt || <Text span fs="italic">No prompt set</Text>}</Text>
-      <Group gap={4}>
-        <Text size="xs" c="dimmed">Saves to:</Text>
-        <Badge size="xs" variant="light" color="violet" tt="none">
-          {`{{${data.variable || '?'}}}`}
-        </Badge>
-      </Group>
-    </Stack>
-  </BaseNode>
-);
+const CollectInputNode = ({ id, data, selected }: NodeProps<CollectInputNodeType>) => {
+  const { updateNodeData } = useReactFlow();
+
+  return (
+    <BaseNode title="Collect Input" color="violet" icon={<IconForms size={14} />} selected={selected}>
+      <Stack gap="xs" className="nodrag">
+        <TextInput
+          label="Intent"
+          placeholder="e.g. order_status"
+          description="The intent that triggers this flow"
+          size="xs"
+          value={data.intent ?? ''}
+          onChange={(e) => { updateNodeData(id, { intent: e.currentTarget.value }); }}
+        />
+        <Textarea
+          label="Prompt"
+          placeholder="e.g. What is your order ID?"
+          description="Message sent to the user"
+          size="xs"
+          autosize
+          minRows={2}
+          value={data.prompt}
+          onChange={(e) => { updateNodeData(id, { prompt: e.currentTarget.value }); }}
+        />
+        <TextInput
+          label="Save as"
+          placeholder="e.g. order_id"
+          description="Variable name to store the response"
+          size="xs"
+          leftSection={<span style={{ fontSize: 11, color: 'var(--mantine-color-violet-4)' }}>{'{'+'{'}</span>}
+          rightSection={<span style={{ fontSize: 11, color: 'var(--mantine-color-violet-4)' }}>{'}' + '}'}</span>}
+          value={data.variable}
+          onChange={(e) => { updateNodeData(id, { variable: e.currentTarget.value }); }}
+        />
+      </Stack>
+    </BaseNode>
+  );
+};
 
 export default CollectInputNode;

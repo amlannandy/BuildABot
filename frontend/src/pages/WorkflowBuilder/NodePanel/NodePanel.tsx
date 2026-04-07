@@ -3,7 +3,6 @@ import { type ReactNode } from 'react';
 import { Box, Divider, Stack, Text, UnstyledButton } from '@mantine/core';
 import {
   IconApi,
-  IconBolt,
   IconDatabase,
   IconForms,
   IconMessage,
@@ -22,13 +21,6 @@ interface PaletteItem {
 }
 
 const PALETTE: PaletteItem[] = [
-  {
-    type: 'intent',
-    label: 'Intent',
-    description: 'Entry point for a conversation flow',
-    color: 'blue',
-    icon: <IconBolt size={18} />,
-  },
   {
     type: 'static_reply',
     label: 'Static Reply',
