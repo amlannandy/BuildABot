@@ -12,6 +12,15 @@
 
 BuildABot lets you create intelligent chatbots without writing code. Using a visual workflow builder, you can design multi-turn conversation flows, connect to external APIs, embed knowledge bases, and deploy your bot across channels like WhatsApp.
 
+### Screenshots
+
+<p align="center">
+  <img src="screenshots/register.png" alt="Register" width="100%"/>
+  <img src="screenshots/chatbot-list.png" alt="Chatbot List" width="100%"/>
+  <img src="screenshots/chatbot-details.png" alt="Chatbot Details" width="100%"/>
+  <img src="screenshots/workflow-builder.png" alt="Workflow Builder" width="100%"/>
+</p>
+
 Key capabilities:
 - **Visual workflow builder** — design branching conversation flows with a drag-and-drop interface
 - **Intent detection** — LLM-powered routing that maps user messages to the right workflow step
