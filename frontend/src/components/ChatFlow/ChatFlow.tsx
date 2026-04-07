@@ -7,7 +7,6 @@ import { notifications } from '@mantine/notifications';
 import { IconMessageCircle, IconSend } from '@tabler/icons-react';
 
 import { useSendMessage } from '@hooks/chatbots/useSendMessage';
-import useSafeNavigate from '@hooks/useSafeNavigate';
 
 import EmptyState from './EmptyState';
 import { useChatFlowStore, type ChatMessage } from './state';
@@ -17,15 +16,20 @@ interface ChatFlowProps {
   chatId: number;
   chatBotName: string;
   isWorkflowConfigured: boolean;
+  handleConfigureWorkflow: () => void;
 }
 
 const CURRENT_USER_IDENTIFIER = v4();
 
-const ChatFlow: React.FC<ChatFlowProps> = ({ chatId, chatBotName, isWorkflowConfigured }) => {
+const ChatFlow: React.FC<ChatFlowProps> = ({
+  chatId,
+  chatBotName,
+  isWorkflowConfigured,
+  handleConfigureWorkflow,
+}) => {
   const [message, setMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { safeNavigate } = useSafeNavigate();
   const { mutate: sendMessage, isPending: isSendingMessage } = useSendMessage();
 
   const messages = useChatFlowStore((state) => state.messages);
@@ -70,10 +74,6 @@ const ChatFlow: React.FC<ChatFlowProps> = ({ chatId, chatBotName, isWorkflowConf
         },
       },
     );
-  };
-
-  const handleConfigureWorkflow = () => {
-    safeNavigate(`/chatbots/${chatId.toString()}/workflow`);
   };
 
   if (!isWorkflowConfigured) {

@@ -13,6 +13,7 @@ import {
   Text,
   Title,
 } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { IconArrowLeft, IconPlugConnected, IconSitemap } from '@tabler/icons-react';
 
 import ChatFlow from '@components/ChatFlow';
@@ -20,6 +21,7 @@ import SecretKeyField from '@components/SecretKeyField';
 import { ROUTES } from '@constants/routes';
 import { useGetChatBot } from '@hooks/chatbots/useGetChatBot';
 import useSafeNavigate from '@hooks/useSafeNavigate';
+import WorkflowBuilder from '@pages/WorkflowBuilder';
 
 import ChatbotNotFound from './ChatbotNotFound';
 
@@ -29,6 +31,9 @@ const ChatbotDetails = () => {
   const { data, isLoading, isError } = useGetChatBot(chatbotId);
   const { safeNavigate } = useSafeNavigate();
   const chatbot = data?.data;
+
+  const [isWorkflowBuilderOpen, { open: openWorkflowBuilder, close: closeWorkflowBuilder }] =
+    useDisclosure(false);
 
   if (isLoading) {
     return (
@@ -86,9 +91,7 @@ const ChatbotDetails = () => {
                   size="xs"
                   variant={hasWorkflow ? 'default' : 'filled'}
                   leftSection={<IconSitemap size={14} />}
-                  onClick={() => {
-                    safeNavigate(ROUTES.CHATBOT_WORKFLOW.replace(':id', chatbotId.toString()));
-                  }}
+                  onClick={openWorkflowBuilder}
                 >
                   {hasWorkflow ? 'Edit Workflow' : 'Configure Workflow'}
                 </Button>
@@ -109,8 +112,10 @@ const ChatbotDetails = () => {
           chatId={chatbotId}
           chatBotName={chatbot.name}
           isWorkflowConfigured={hasWorkflow}
+          handleConfigureWorkflow={openWorkflowBuilder}
         />
       </SimpleGrid>
+      <WorkflowBuilder isOpen={isWorkflowBuilderOpen} onClose={closeWorkflowBuilder} />
     </Stack>
   );
 };

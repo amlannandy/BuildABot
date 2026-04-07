@@ -35,6 +35,9 @@ dependencies:
   react-dom:
     specifier: ^19.2.4
     version: 19.2.4(react@19.2.4)
+  react-flow:
+    specifier: ^1.0.3
+    version: 1.0.3
   react-router-dom:
     specifier: ^7.13.2
     version: 7.13.2(react-dom@19.2.4)(react@19.2.4)
@@ -2980,6 +2983,10 @@ packages:
     dependencies:
       react: 19.2.4
       scheduler: 0.27.0
+    dev: false
+
+  /react-flow@1.0.3:
+    resolution: {integrity: sha512-Rx4Oqqbe9y7NyrUGzCrmtNvuGuMJBVjfIeMFuwbtbMc9f22sUSmxMjIA0c8r6Z7iMtB1zOWoGkTgfpmmpH9ReQ==}
     dev: false
 
   /react-is@16.13.1:

@@ -3,5 +3,4 @@ export const ROUTES = {
   LOGIN: '/login',
   REGISTER: '/register',
   CHATBOT_DETAILS: '/chatbots/:id',
-  CHATBOT_WORKFLOW: '/chatbots/:id/workflow',
 };
