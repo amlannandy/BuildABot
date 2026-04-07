@@ -12,6 +12,7 @@ import { AuthProvider } from '@context/auth';
 import Home from '@pages/Home';
 import Login from '@pages/Login';
 import Register from '@pages/Register';
+import WorkflowBuilder from '@pages/WorkflowBuilder';
 
 import './App.css';
 
@@ -47,6 +48,7 @@ function App() {
             <AuthProvider>
               <Routes>
                 <Route element={<PrivateRoute />}>
+                  <Route path={ROUTES.WORKFLOW_BUILDER} element={<WorkflowBuilder />} />
                   <Route path="/*" element={<Home />} />
                 </Route>
                 <Route element={<GuestRoute />}>

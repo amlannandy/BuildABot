@@ -13,7 +13,6 @@ import {
   Text,
   Title,
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import { IconArrowLeft, IconPlugConnected, IconSitemap } from '@tabler/icons-react';
 
 import ChatFlow from '@components/ChatFlow';
@@ -21,7 +20,6 @@ import SecretKeyField from '@components/SecretKeyField';
 import { ROUTES } from '@constants/routes';
 import { useGetChatBot } from '@hooks/chatbots/useGetChatBot';
 import useSafeNavigate from '@hooks/useSafeNavigate';
-import WorkflowBuilder from '@pages/WorkflowBuilder';
 
 import ChatbotNotFound from './ChatbotNotFound';
 
@@ -32,8 +30,9 @@ const ChatbotDetails = () => {
   const { safeNavigate } = useSafeNavigate();
   const chatbot = data?.data;
 
-  const [isWorkflowBuilderOpen, { open: openWorkflowBuilder, close: closeWorkflowBuilder }] =
-    useDisclosure(false);
+  const openWorkflowBuilder = () => {
+    safeNavigate(ROUTES.WORKFLOW_BUILDER.replace(':id', chatbotId.toString()));
+  };
 
   if (isLoading) {
     return (
@@ -115,7 +114,6 @@ const ChatbotDetails = () => {
           handleConfigureWorkflow={openWorkflowBuilder}
         />
       </SimpleGrid>
-      <WorkflowBuilder isOpen={isWorkflowBuilderOpen} onClose={closeWorkflowBuilder} />
     </Stack>
   );
 };
