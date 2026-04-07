@@ -22,11 +22,15 @@ interface ChatFlowProps {
 const CURRENT_USER_IDENTIFIER = v4();
 
 const ChatFlow: React.FC<ChatFlowProps> = ({ chatId, chatBotName, isWorkflowConfigured }) => {
-  const { safeNavigate } = useSafeNavigate();
   const [message, setMessage] = useState('');
-  const { mutate: sendMessage, isPending: isSendingMessage } = useSendMessage();
-  const { messages, addMessage, removeMessage } = useChatFlowStore();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const { safeNavigate } = useSafeNavigate();
+  const { mutate: sendMessage, isPending: isSendingMessage } = useSendMessage();
+
+  const messages = useChatFlowStore((state) => state.messages);
+  const addMessage = useChatFlowStore((state) => state.addMessage);
+  const removeMessage = useChatFlowStore((state) => state.removeMessage);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
