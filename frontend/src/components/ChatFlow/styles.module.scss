@@ -1,5 +1,8 @@
 .card {
-  min-height: 420px;
+  height: 720px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .header {
@@ -7,7 +10,9 @@
 }
 
 .messages {
+  flex: 1;
   overflow-y: auto;
+  min-height: 0;
 }
 
 .bubble {

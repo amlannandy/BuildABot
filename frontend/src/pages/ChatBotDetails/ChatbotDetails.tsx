@@ -105,7 +105,11 @@ const ChatbotDetails = () => {
           </Card>
         </Stack>
         {/* Right column */}
-        <ChatFlow chatId={chatbotId} isWorkflowConfigured={hasWorkflow} />
+        <ChatFlow
+          chatId={chatbotId}
+          chatBotName={chatbot.name}
+          isWorkflowConfigured={hasWorkflow}
+        />
       </SimpleGrid>
     </Stack>
   );
