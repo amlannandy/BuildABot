@@ -15,7 +15,7 @@ BuildABot lets you create intelligent chatbots without writing code. Using a vis
 ### Screenshots
 
 <p align="center">
-  <img src="[screenshots/register.png](https://github.com/user-attachments/assets/9af7c5d0-31e1-4dc4-95d7-72e587ba74f5)" alt="Workflow Builder" width="100%"/>
+  <img src="https://github.com/user-attachments/assets/9af7c5d0-31e1-4dc4-95d7-72e587ba74f5" alt="Workflow Builder" width="100%"/>
 </p>
 
 Key capabilities:
