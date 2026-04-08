@@ -8,14 +8,16 @@ import type { KnowledgeBase } from '@dto/knowledgeBase';
 export function useListKnowledgeBases(
   chatbotId: number,
   nameFilter?: string,
+  page = 1,
+  limit = 10,
 ): UseQueryResult<PaginatedResponse<KnowledgeBase>, ApiErrorResponse> {
   return useQuery<PaginatedResponse<KnowledgeBase>, ApiErrorResponse>({
-    queryKey: [REACT_QUERY_KEYS.LIST_KNOWLEDGE_BASES, chatbotId, nameFilter],
+    queryKey: [REACT_QUERY_KEYS.LIST_KNOWLEDGE_BASES, chatbotId, nameFilter, page, limit],
     queryFn: async () => {
       const response = await listKnowledgeBases({
         chatbot_id: chatbotId,
-        page: 1,
-        limit: 10,
+        page,
+        limit,
         filters: { name: nameFilter },
       });
       return response.data;

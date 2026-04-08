@@ -56,7 +56,7 @@ func (r *knowledgeBaseRepo) FindPaginated(params KnowledgeBaseListParams) ([]mod
 	var kbs []models.KnowledgeBase
 	var total int64
 
-	query := r.db.Model(&models.KnowledgeBase{}).Where("chatbot_id = ?", params.ChatBotID)
+	query := r.db.Model(&models.KnowledgeBase{}).Where("chat_bot_id = ?", params.ChatBotID)
 
 	if params.NameFilter != nil && *params.NameFilter != "" {
 		query = query.Where("name ILIKE ?", "%"+*params.NameFilter+"%")

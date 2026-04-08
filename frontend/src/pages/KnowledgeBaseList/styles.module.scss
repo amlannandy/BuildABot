@@ -1,0 +1,15 @@
+.kbCard {
+  position: relative;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+
+  &:hover {
+    border-color: var(--mantine-color-dark-3);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+  }
+}
+
+.cardMenu {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
