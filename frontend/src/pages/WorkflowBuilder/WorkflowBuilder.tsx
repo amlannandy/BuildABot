@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import {
   addEdge,
@@ -38,6 +38,8 @@ const defaultData: Record<string, Record<string, unknown>> = {
 
 const WorkflowBuilderInner = () => {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const chatbotId = Number(id ?? 0);
   const { screenToFlowPosition } = useReactFlow();
 
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
@@ -62,9 +64,12 @@ const WorkflowBuilderInner = () => {
       if (!type) return;
 
       const position = screenToFlowPosition({ x: e.clientX, y: e.clientY });
-      setNodes((nds) => [...nds, { id: uuid(), type, position, data: defaultData[type] ?? {} }]);
+      const data = type === 'knowledge_base'
+        ? { ...defaultData[type], chatbotId }
+        : defaultData[type] ?? {};
+      setNodes((nds) => [...nds, { id: uuid(), type, position, data }]);
     },
-    [screenToFlowPosition, setNodes],
+    [chatbotId, screenToFlowPosition, setNodes],
   );
 
   return (

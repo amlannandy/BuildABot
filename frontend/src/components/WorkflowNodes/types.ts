@@ -29,10 +29,10 @@ export interface ApiCallNodeData extends Record<string, unknown> {
 }
 
 export interface KnowledgeBaseNodeData extends Record<string, unknown> {
+  chatbotId: number;
   intent?: string;
-  kbId: number;
+  kbId?: number;
   kbName?: string;
-  replyTemplate?: string;
 }
 
 export interface LLMGenerateNodeData extends Record<string, unknown> {
