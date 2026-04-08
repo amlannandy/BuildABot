@@ -7,14 +7,16 @@ export { default as EndConversationNode } from './EndConversationNode';
 
 export * from './types';
 
-import StaticReplyNode from './StaticReplyNode';
-import CollectInputNode from './CollectInputNode';
+import type { ActionType } from '@dto/chatbot';
+
 import ApiCallNode from './ApiCallNode';
+import CollectInputNode from './CollectInputNode';
+import EndConversationNode from './EndConversationNode';
 import KnowledgeBaseNode from './KnowledgeBaseNode';
 import LLMGenerateNode from './LLMGenerateNode';
-import EndConversationNode from './EndConversationNode';
+import StaticReplyNode from './StaticReplyNode';
 
-export const nodeTypes = {
+export const nodeTypes: Record<ActionType, unknown> = {
   static_reply: StaticReplyNode,
   collect_input: CollectInputNode,
   api_call: ApiCallNode,
