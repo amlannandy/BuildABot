@@ -38,10 +38,10 @@ const ChatFlow: React.FC<ChatFlowProps> = ({
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, isSendingMessage]);
 
   const handleSendMessage = () => {
-    if (isSendingMessage) return;
+    if (isSendingMessage || !message.trim()) return;
     const userMessageId = v4();
     const userMessage: ChatMessage = {
       id: userMessageId,
@@ -83,30 +83,42 @@ const ChatFlow: React.FC<ChatFlowProps> = ({
   return (
     <Card withBorder radius="md" className={styles.card}>
       <Stack h="100%" gap={0}>
-        <Group px="md" py="sm" className={styles.header}>
-          <IconMessageCircle size={18} />
-          <Text fw={600} size="sm">
+        <Group px="md" py="xs" className={styles.header}>
+          <IconMessageCircle size={16} />
+          <Text fw={600} size="sm" flex={1}>
             {chatBotName}
           </Text>
           <Badge size="xs" color="green" variant="dot">
             Active
           </Badge>
         </Group>
-        <Stack flex={1} px="md" py="sm" gap="sm" className={styles.messages}>
+
+        <Box className={styles.messages}>
           {messages.map((msg) => (
             <Box
               key={msg.id}
               className={`${styles.bubble} ${msg.sender === 'user' ? styles.outgoing : styles.incoming}`}
             >
-              <Text size="sm">{msg.text}</Text>
+              <Text size="sm" c={msg.sender === 'user' ? 'white' : undefined}>
+                {msg.text}
+              </Text>
             </Box>
           ))}
+          {isSendingMessage && (
+            <Box className={styles.typingBubble}>
+              <Box className={styles.typingDot} />
+              <Box className={styles.typingDot} />
+              <Box className={styles.typingDot} />
+            </Box>
+          )}
           <div ref={messagesEndRef} />
-        </Stack>
-        <Box px="md" py="sm" className={styles.input}>
+        </Box>
+
+        <Box className={styles.input}>
           <TextInput
             placeholder="Type a message..."
             radius="xl"
+            size="sm"
             value={message}
             readOnly={isSendingMessage}
             onChange={(e) => {
@@ -119,8 +131,14 @@ const ChatFlow: React.FC<ChatFlowProps> = ({
               }
             }}
             rightSection={
-              <ActionIcon radius="xl" onClick={handleSendMessage} loading={isSendingMessage}>
-                <IconSend size={16} />
+              <ActionIcon
+                radius="xl"
+                size="sm"
+                onClick={handleSendMessage}
+                loading={isSendingMessage}
+                disabled={!message.trim()}
+              >
+                <IconSend size={14} />
               </ActionIcon>
             }
           />

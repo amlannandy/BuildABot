@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 import { ActionIcon, Group, Stack, Text, TextInput, Tooltip } from '@mantine/core';
-import { IconCheck, IconCopy, IconEye, IconEyeOff } from '@tabler/icons-react';
 import { useClipboard } from '@mantine/hooks';
+import { IconCheck, IconCopy, IconEye, IconEyeOff } from '@tabler/icons-react';
 
 import styles from './styles.module.scss';
 

@@ -2,13 +2,15 @@ import { useState } from 'react';
 
 import { type NodeProps, type Node, useReactFlow } from '@xyflow/react';
 
-import { Combobox, InputBase, Stack, TextInput, useCombobox } from '@mantine/core';
+import { Box, Combobox, InputBase, Stack, TextInput, useCombobox } from '@mantine/core';
 import { IconDatabase, IconPlus } from '@tabler/icons-react';
 
 import { useListKnowledgeBases } from '@hooks/knowledgeBases/useListKnowledgeBases';
 
 import BaseNode from '../BaseNode';
 import { type KnowledgeBaseNodeData } from '../types';
+
+import styles from './styles.module.scss';
 
 type KnowledgeBaseNodeType = Node<KnowledgeBaseNodeData, 'knowledge_base'>;
 
@@ -93,14 +95,11 @@ const KnowledgeBaseNode = ({ id, data, selected }: NodeProps<KnowledgeBaseNodeTy
                   {kb.name}
                 </Combobox.Option>
               ))}
-              <Combobox.Option
-                value={UPLOAD_VALUE}
-                style={{ color: 'var(--mantine-color-teal-5)' }}
-              >
-                <Stack gap={2} style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Combobox.Option value={UPLOAD_VALUE} className={styles.uploadOption}>
+                <Box className={styles.uploadRow}>
                   <IconPlus size={12} />
                   Upload new knowledge base
-                </Stack>
+                </Box>
               </Combobox.Option>
             </Combobox.Options>
           </Combobox.Dropdown>

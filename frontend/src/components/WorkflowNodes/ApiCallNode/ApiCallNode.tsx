@@ -159,10 +159,10 @@ const ApiCallNode: React.FC<ApiCallNodeTypeProps> = ({ id, data, selected }) => 
 
         {data.endpoint && (
           <Group gap={4} wrap="wrap">
-            <Badge size="xs" color="orange" variant="filled" style={{ flexShrink: 0 }}>
+            <Badge size="xs" color="orange" variant="filled" className={styles.endpointBadge}>
               {data.method}
             </Badge>
-            <Text size="xs" c="dimmed" truncate="end" style={{ minWidth: 0, flex: 1 }}>
+            <Text size="xs" c="dimmed" truncate="end" className={styles.endpointUrl}>
               {data.endpoint}
             </Text>
           </Group>

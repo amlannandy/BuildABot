@@ -57,7 +57,7 @@ const Register = () => {
             message: 'Welcome to BuildABot!',
             color: 'green',
           });
-          void authenticate(token);
+          authenticate(token);
         },
         onError: (error) => {
           const errorMessage = error.errors[0] || 'Something went wrong';

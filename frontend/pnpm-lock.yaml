@@ -32,6 +32,9 @@ dependencies:
   axios:
     specifier: 1.14.0
     version: 1.14.0
+  classnames:
+    specifier: ^2.5.1
+    version: 2.5.1
   react:
     specifier: ^19.2.4
     version: 19.2.4
@@ -1537,6 +1540,10 @@ packages:
 
   /classcat@5.0.5:
     resolution: {integrity: sha512-JhZUT7JFcQy/EzW605k/ktHtncoo9vnyW/2GspNYwFlN1C/WmjuV/xtS04e9SOkL2sTdw0VAZ2UGCcQ9lR6p6w==}
+    dev: false
+
+  /classnames@2.5.1:
+    resolution: {integrity: sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==}
     dev: false
 
   /clsx@2.1.1:

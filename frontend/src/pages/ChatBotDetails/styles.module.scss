@@ -4,3 +4,22 @@
   padding: 20px;
   display: flex;
 }
+
+.page {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 60px);
+}
+
+.header {
+  height: 52px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--mantine-color-dark-4);
+  background: var(--mantine-color-dark-7);
+}
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--mantine-spacing-xl);
+}

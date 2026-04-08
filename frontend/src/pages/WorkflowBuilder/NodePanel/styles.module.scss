@@ -6,7 +6,14 @@
 }
 
 .heading {
-  padding: 16px 12px 12px;
+  padding: 0 12px;
+  height: 52px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-shrink: 0;
+  background: var(--mantine-color-dark-7);
+  border-bottom: 1px solid var(--mantine-color-dark-4);
 }
 
 .tile {
@@ -19,7 +26,9 @@
   background: var(--mantine-color-dark-6);
   cursor: grab;
   width: 100%;
-  transition: border-color 100ms ease, background 100ms ease;
+  transition:
+    border-color 100ms ease,
+    background 100ms ease;
 
   &:hover {
     background: var(--mantine-color-dark-5);

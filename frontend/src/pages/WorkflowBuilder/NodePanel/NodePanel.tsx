@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { Fragment, type ReactNode } from 'react';
 
 import { Box, Divider, Stack, Text, UnstyledButton } from '@mantine/core';
 import {
@@ -74,23 +74,24 @@ const NodePanel = () => {
   return (
     <Box className={styles.panel}>
       <Box className={styles.heading}>
-        <Text size="sm" fw={700}>
+        <Text size="sm" fw={600}>
           Nodes
         </Text>
         <Text size="xs" c="dimmed">
           Drag onto the canvas
         </Text>
       </Box>
-      <Divider />
-      <Stack gap={0} p="sm">
+      <Stack gap="xs" p="sm">
         {PALETTE.map(({ type, label, description, color, icon }, index) => (
-          <>
-            {index > 0 && <Divider my="xs" />}
+          <Fragment key={type}>
+            {index > 0 && <Divider />}
             <UnstyledButton
               key={type}
               className={styles.tile}
               draggable
-              onDragStart={(e) => onDragStart(e, type)}
+              onDragStart={(e) => {
+                onDragStart(e, type);
+              }}
             >
               <Box
                 className={styles.iconWrap}
@@ -110,7 +111,7 @@ const NodePanel = () => {
                 </Text>
               </Box>
             </UnstyledButton>
-          </>
+          </Fragment>
         ))}
       </Stack>
     </Box>

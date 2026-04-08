@@ -6,13 +6,21 @@ import { IconForms } from '@tabler/icons-react';
 import BaseNode from '../BaseNode';
 import { type CollectInputNodeData } from '../types';
 
+import styles from './styles.module.scss';
+
 type CollectInputNodeType = Node<CollectInputNodeData, 'collect_input'>;
 
 const CollectInputNode = ({ id, data, selected }: NodeProps<CollectInputNodeType>) => {
   const { updateNodeData } = useReactFlow();
 
   return (
-    <BaseNode id={id} title="Collect Input" color="violet" icon={<IconForms size={14} />} selected={selected}>
+    <BaseNode
+      id={id}
+      title="Collect Input"
+      color="violet"
+      icon={<IconForms size={14} />}
+      selected={selected}
+    >
       <Stack gap="xs" className="nodrag">
         <TextInput
           label="Intent"
@@ -20,7 +28,9 @@ const CollectInputNode = ({ id, data, selected }: NodeProps<CollectInputNodeType
           description="The intent that triggers this flow"
           size="xs"
           value={data.intent ?? ''}
-          onChange={(e) => { updateNodeData(id, { intent: e.currentTarget.value }); }}
+          onChange={(e) => {
+            updateNodeData(id, { intent: e.currentTarget.value });
+          }}
         />
         <Textarea
           label="Prompt"
@@ -30,17 +40,21 @@ const CollectInputNode = ({ id, data, selected }: NodeProps<CollectInputNodeType
           autosize
           minRows={2}
           value={data.prompt}
-          onChange={(e) => { updateNodeData(id, { prompt: e.currentTarget.value }); }}
+          onChange={(e) => {
+            updateNodeData(id, { prompt: e.currentTarget.value });
+          }}
         />
         <TextInput
           label="Save as"
           placeholder="e.g. order_id"
           description="Variable name to store the response"
           size="xs"
-          leftSection={<span style={{ fontSize: 11, color: 'var(--mantine-color-violet-4)' }}>{'{'+'{'}</span>}
-          rightSection={<span style={{ fontSize: 11, color: 'var(--mantine-color-violet-4)' }}>{'}' + '}'}</span>}
+          leftSection={<span className={styles.varBrace}>{'{' + '{'}</span>}
+          rightSection={<span className={styles.varBrace}>{'}' + '}'}</span>}
           value={data.variable}
-          onChange={(e) => { updateNodeData(id, { variable: e.currentTarget.value }); }}
+          onChange={(e) => {
+            updateNodeData(id, { variable: e.currentTarget.value });
+          }}
         />
       </Stack>
     </BaseNode>

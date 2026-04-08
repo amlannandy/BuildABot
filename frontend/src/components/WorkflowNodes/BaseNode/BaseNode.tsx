@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { Handle, Position, useReactFlow } from '@xyflow/react';
+import cn from 'classnames';
 
 import { ActionIcon, Box, Group, Stack, Text } from '@mantine/core';
 import { IconTrash } from '@tabler/icons-react';
@@ -31,7 +32,7 @@ const BaseNode = ({
   const { deleteElements } = useReactFlow();
 
   return (
-    <Box className={`${styles.node} ${selected ? styles.selected : ''}`}>
+    <Box className={cn(styles.node, { [styles.selected]: selected })}>
       {hasInput && <Handle type="target" position={Position.Left} className={styles.handle} />}
 
       <Box className={styles.header} style={{ borderColor: `var(--mantine-color-${color}-6)` }}>

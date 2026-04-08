@@ -1,6 +1,5 @@
-import { IconRobotOff } from '@tabler/icons-react';
-
 import { Box, Button, Center, Stack, Text } from '@mantine/core';
+import { IconRobotOff } from '@tabler/icons-react';
 
 import { ROUTES } from '@constants/routes';
 import useSafeNavigate from '@hooks/useSafeNavigate';

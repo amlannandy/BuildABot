@@ -43,7 +43,7 @@ const Login = () => {
           message: 'Welcome back to BuildABot!',
           color: 'green',
         });
-        void authenticate(token);
+        authenticate(token);
       },
       onError: (error: ApiErrorResponse) => {
         const errorMessage = error.errors[0] || 'Something went wrong';

@@ -18,3 +18,12 @@
     border-color: var(--mantine-color-orange-8);
   }
 }
+
+.endpointBadge {
+  flex-shrink: 0;
+}
+
+.endpointUrl {
+  min-width: 0;
+  flex: 1;
+}
