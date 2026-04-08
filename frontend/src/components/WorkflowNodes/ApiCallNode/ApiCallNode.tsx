@@ -72,7 +72,7 @@ const ApiCallNode: React.FC<ApiCallNodeTypeProps> = ({ id, data, selected }) => 
       : null;
 
   return (
-    <BaseNode title="API Call" color="orange" icon={<IconApi size={14} />} selected={selected}>
+    <BaseNode id={id} title="API Call" color="orange" icon={<IconApi size={14} />} selected={selected}>
       <Stack gap="xs" className="nodrag">
         <Select
           label="Method"

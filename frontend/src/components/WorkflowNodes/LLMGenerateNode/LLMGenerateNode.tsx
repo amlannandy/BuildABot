@@ -12,7 +12,7 @@ const LLMGenerateNode = ({ id, data, selected }: NodeProps<LLMGenerateNodeType>)
   const { updateNodeData } = useReactFlow();
 
   return (
-    <BaseNode title="LLM Generate" color="indigo" icon={<IconSparkles size={14} />} selected={selected}>
+    <BaseNode id={id} title="LLM Generate" color="indigo" icon={<IconSparkles size={14} />} selected={selected}>
       <div className="nodrag">
         <Textarea
           label="Reply template"

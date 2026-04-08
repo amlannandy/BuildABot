@@ -12,7 +12,7 @@ const EndConversationNode = ({ id, data, selected }: NodeProps<EndConversationNo
   const { updateNodeData } = useReactFlow();
 
   return (
-    <BaseNode title="End Conversation" color="red" icon={<IconPlayerStop size={14} />} hasOutput={false} selected={selected}>
+    <BaseNode id={id} title="End Conversation" color="red" icon={<IconPlayerStop size={14} />} hasOutput={false} selected={selected}>
       <div className="nodrag">
         <Textarea
           label="Farewell message"

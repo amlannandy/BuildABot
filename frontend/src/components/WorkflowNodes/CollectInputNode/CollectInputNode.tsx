@@ -12,7 +12,7 @@ const CollectInputNode = ({ id, data, selected }: NodeProps<CollectInputNodeType
   const { updateNodeData } = useReactFlow();
 
   return (
-    <BaseNode title="Collect Input" color="violet" icon={<IconForms size={14} />} selected={selected}>
+    <BaseNode id={id} title="Collect Input" color="violet" icon={<IconForms size={14} />} selected={selected}>
       <Stack gap="xs" className="nodrag">
         <TextInput
           label="Intent"

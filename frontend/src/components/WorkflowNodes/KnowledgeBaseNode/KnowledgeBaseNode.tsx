@@ -40,6 +40,7 @@ const KnowledgeBaseNode = ({ id, data, selected }: NodeProps<KnowledgeBaseNodeTy
 
   return (
     <BaseNode
+      id={id}
       title="Knowledge Base"
       color="teal"
       icon={<IconDatabase size={14} />}

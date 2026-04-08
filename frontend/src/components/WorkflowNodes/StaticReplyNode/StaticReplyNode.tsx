@@ -13,6 +13,7 @@ const StaticReplyNode: React.FC<StaticReplyNodeTypeProps> = ({ id, data, selecte
 
   return (
     <BaseNode
+      id={id}
       title="Static Reply"
       color="green"
       icon={<IconMessage size={14} />}
