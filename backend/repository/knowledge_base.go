@@ -7,10 +7,18 @@ import (
 	"gorm.io/gorm"
 )
 
+type KnowledgeBaseListParams struct {
+	ChatBotID  uint
+	Limit      int
+	Offset     int
+	NameFilter *string
+}
+
 type KnowledgeBaseRepository interface {
 	Create(kb *models.KnowledgeBase) (*models.KnowledgeBase, error)
 	FindByID(id uint) (*models.KnowledgeBase, error)
 	FindByChatBotID(chatBotID uint) ([]models.KnowledgeBase, error)
+	FindPaginated(params KnowledgeBaseListParams) ([]models.KnowledgeBase, int64, error)
 	Delete(id uint) error
 	CreateChunks(chunks []models.KnowledgeChunk) error
 	FindSimilarChunks(kbID uint, vector pgvector.Vector, topN int) ([]models.KnowledgeChunk, error)
@@ -42,6 +50,27 @@ func (r *knowledgeBaseRepo) FindByChatBotID(chatBotID uint) ([]models.KnowledgeB
 	var kbs []models.KnowledgeBase
 	result := r.db.Where("chatbot_id = ?", chatBotID).Find(&kbs)
 	return kbs, result.Error
+}
+
+func (r *knowledgeBaseRepo) FindPaginated(params KnowledgeBaseListParams) ([]models.KnowledgeBase, int64, error) {
+	var kbs []models.KnowledgeBase
+	var total int64
+
+	query := r.db.Model(&models.KnowledgeBase{}).Where("chatbot_id = ?", params.ChatBotID)
+
+	if params.NameFilter != nil && *params.NameFilter != "" {
+		query = query.Where("name ILIKE ?", "%"+*params.NameFilter+"%")
+	}
+
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	if err := query.Limit(params.Limit).Offset(params.Offset).Find(&kbs).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return kbs, total, nil
 }
 
 func (r *knowledgeBaseRepo) Delete(id uint) error {

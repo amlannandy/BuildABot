@@ -25,6 +25,7 @@ import (
 	"build-a-bot/models"
 	"build-a-bot/repository"
 	"build-a-bot/router"
+	"build-a-bot/storage"
 	"build-a-bot/utils"
 
 	_ "build-a-bot/docs"
@@ -75,12 +76,15 @@ func main() {
 
 	whatsAppClient := integrations.NewMetaClient(cfg.WhatsAppAPIToken)
 
+	storageClient := storage.NewS3Client(cfg.S3Bucket, cfg.S3Region, cfg.AWSAccessKey, cfg.AWSSecretKey)
+
 	authHandler := handlers.NewAuthHandler(userRepo)
 	chatBotHandler := handlers.NewChatBotHandler(chatBotRepo, eng)
 	whatsAppHandler := handlers.NewIntegrationsHandler(chatBotRepo, eng, whatsAppClient, cfg.WhatsAppVerifyToken)
+	kbHandler := handlers.NewKnowledgeBaseHandler(knowledgeBaseRepo, storageClient, embeddingClient)
 
 	// Build router
-	r := router.New(authHandler, chatBotHandler, whatsAppHandler)
+	r := router.New(authHandler, chatBotHandler, whatsAppHandler, kbHandler)
 
 	// Configure HTTP server
 	srv := &http.Server{

@@ -418,7 +418,176 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.ChatResponse"
+                            "$ref": "#/definitions/dto.SuccessResponse-dto_ChatResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/knowledge-bases/create": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "knowledge-bases"
+                ],
+                "summary": "Create a new knowledge base from an uploaded file",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ChatBot ID",
+                        "name": "chatbot_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Knowledge Base name",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "File to upload (.txt or .pdf)",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SuccessResponse-models_KnowledgeBase"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/knowledge-bases/list": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "knowledge-bases"
+                ],
+                "summary": "List knowledge bases for a chatbot with pagination and filters",
+                "parameters": [
+                    {
+                        "description": "List knowledge bases payload",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ListKnowledgeBasesRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SuccessResponse-dto_PaginatedResponse-models_KnowledgeBase"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/knowledge-bases/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "knowledge-bases"
+                ],
+                "summary": "Delete a knowledge base by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Knowledge Base ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SuccessResponse-any"
                         }
                     },
                     "400": {
@@ -475,24 +644,7 @@ const docTemplate = `{
             }
         },
         "dto.CreateChatBotRequest": {
-            "type": "object",
-            "required": [
-                "name"
-            ],
-            "properties": {
-                "config": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "workflow": {
-                    "type": "string"
-                }
-            }
+            "type": "object"
         },
         "dto.ErrorResponse": {
             "type": "object",
@@ -505,11 +657,36 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.KnowledgeBaseFilters": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.ListChatBotsRequest": {
             "type": "object",
             "properties": {
                 "filters": {
                     "$ref": "#/definitions/dto.ChatBotFilters"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.ListKnowledgeBasesRequest": {
+            "type": "object",
+            "properties": {
+                "chatbot_id": {
+                    "type": "integer"
+                },
+                "filters": {
+                    "$ref": "#/definitions/dto.KnowledgeBaseFilters"
                 },
                 "limit": {
                     "type": "integer"
@@ -541,6 +718,20 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.ChatBot"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/dto.PaginationMeta"
+                }
+            }
+        },
+        "dto.PaginatedResponse-models_KnowledgeBase": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.KnowledgeBase"
                     }
                 },
                 "pagination": {
@@ -597,6 +788,17 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.SuccessResponse-dto_ChatResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.ChatResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.SuccessResponse-dto_PaginatedResponse-models_ChatBot": {
             "type": "object",
             "properties": {
@@ -608,11 +810,33 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.SuccessResponse-dto_PaginatedResponse-models_KnowledgeBase": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.PaginatedResponse-models_KnowledgeBase"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.SuccessResponse-models_ChatBot": {
             "type": "object",
             "properties": {
                 "data": {
                     "$ref": "#/definitions/models.ChatBot"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.SuccessResponse-models_KnowledgeBase": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/models.KnowledgeBase"
                 },
                 "message": {
                     "type": "string"
@@ -642,21 +866,7 @@ const docTemplate = `{
             }
         },
         "dto.UpdateChatBotRequest": {
-            "type": "object",
-            "properties": {
-                "config": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "workflow": {
-                    "type": "string"
-                }
-            }
+            "type": "object"
         },
         "models.ChatBot": {
             "type": "object",
@@ -689,6 +899,46 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "workflow": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.FileType": {
+            "type": "string",
+            "enum": [
+                "txt",
+                "pdf"
+            ],
+            "x-enum-varnames": [
+                "FileTypeTxt",
+                "FileTypePDF"
+            ]
+        },
+        "models.KnowledgeBase": {
+            "type": "object",
+            "properties": {
+                "chatbot_id": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "file_name": {
+                    "type": "string"
+                },
+                "file_type": {
+                    "$ref": "#/definitions/models.FileType"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "s3_key": {
+                    "type": "string"
+                },
+                "updated_at": {
                     "type": "string"
                 }
             }
