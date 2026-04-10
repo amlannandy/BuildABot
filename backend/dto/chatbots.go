@@ -26,6 +26,7 @@ type ListChatBotsRequest = ListRequest[ChatBotFilters]
 type ChatRequest struct {
 	Message        string `json:"message"`
 	UserIdentifier string `json:"user_identifier"`
+	APIKey         string `json:"api_key"`
 }
 
 type ChatResponse struct {

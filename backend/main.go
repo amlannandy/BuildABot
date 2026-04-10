@@ -89,7 +89,7 @@ func main() {
 	// Configure HTTP server
 	srv := &http.Server{
 		Addr:         ":" + cfg.Port,
-		Handler:      middleware.CORS(cfg.AllowedOrigin)(r),
+		Handler:      middleware.CORS()(r),
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 15 * time.Second,
 		IdleTimeout:  60 * time.Second,

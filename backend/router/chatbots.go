@@ -14,5 +14,5 @@ func mountChatBotRoutes(r *mux.Router, h *handlers.ChatBotHandler) {
 	r.Handle("/chatbots/{id}", middleware.JWTAuth(http.HandlerFunc(h.GetChatBot))).Methods(http.MethodGet)
 	r.Handle("/chatbots/{id}", middleware.JWTAuth(http.HandlerFunc(h.UpdateChatBot))).Methods(http.MethodPatch)
 	r.Handle("/chatbots/{id}", middleware.JWTAuth(http.HandlerFunc(h.DeleteChatBot))).Methods(http.MethodDelete)
-	r.HandleFunc("/chatbots/{id}/chat", h.Chat).Methods(http.MethodPost)
+	r.HandleFunc("/chatbots/{id}/chat", h.Chat).Methods(http.MethodPost, http.MethodOptions)
 }

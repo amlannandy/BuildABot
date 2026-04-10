@@ -299,10 +299,19 @@ func (h *ChatBotHandler) Chat(w http.ResponseWriter, r *http.Request) {
 		utils.BuildErrorResponse(w, http.StatusBadRequest, "User identifier is required")
 		return
 	}
+	if req.APIKey == "" {
+		utils.BuildErrorResponse(w, http.StatusBadRequest, "API key is required")
+		return
+	}
 
 	chatbot, err := h.repo.FindByID(uint(id))
 	if err != nil {
 		utils.BuildErrorResponse(w, http.StatusNotFound, "Chatbot not found")
+		return
+	}
+
+	if req.APIKey != chatbot.APIKey {
+		utils.BuildErrorResponse(w, http.StatusUnauthorized, "Invalid API key")
 		return
 	}
 
