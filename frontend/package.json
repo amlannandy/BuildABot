@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:widget": "vite build --config vite.widget.config.ts",
+    "run:widget": "cd dist-widget && npx serve . --cors -p 3001"
   },
   "dependencies": {
     "@mantine/core": "^9.0.0",

@@ -15,6 +15,7 @@ import styles from './styles.module.scss';
 interface ChatFlowProps {
   chatId: number;
   chatBotName: string;
+  apiKey: string;
   isWorkflowConfigured: boolean;
   handleConfigureWorkflow: () => void;
 }
@@ -24,6 +25,7 @@ const CURRENT_USER_IDENTIFIER = v4();
 const ChatFlow: React.FC<ChatFlowProps> = ({
   chatId,
   chatBotName,
+  apiKey,
   isWorkflowConfigured,
   handleConfigureWorkflow,
 }) => {
@@ -55,6 +57,7 @@ const ChatFlow: React.FC<ChatFlowProps> = ({
         chatbotId: chatId,
         message,
         userIdentifier: CURRENT_USER_IDENTIFIER,
+        apiKey,
       },
       {
         onSuccess: (response) => {

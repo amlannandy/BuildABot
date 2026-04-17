@@ -6,14 +6,25 @@ import {
   Button,
   Card,
   Center,
+  Code,
+  CopyButton,
   Divider,
   Group,
   Loader,
   SimpleGrid,
   Stack,
   Text,
+  Tooltip,
 } from '@mantine/core';
-import { IconArrowLeft, IconInfoCircle, IconPlugConnected, IconSitemap } from '@tabler/icons-react';
+import {
+  IconArrowLeft,
+  IconCheck,
+  IconCode,
+  IconCopy,
+  IconInfoCircle,
+  IconPlugConnected,
+  IconSitemap,
+} from '@tabler/icons-react';
 
 import ChatFlow from '@components/ChatFlow';
 import SecretKeyField from '@components/SecretKeyField';
@@ -48,6 +59,30 @@ const ChatbotDetails = () => {
   }
 
   const hasWorkflow = !!chatbot.workflow;
+
+  const apiUrl = import.meta.env.VITE_API_URL as string;
+  const widgetUrl = import.meta.env.VITE_WIDGET_URL as string;
+  const maskedKey =
+    chatbot.api_key.slice(0, 6) + '••••••••••••••••••••' + chatbot.api_key.slice(-4);
+  const chatbotIdStr = String(chatbot.id);
+  const snippetDisplay = `<script>
+  window.BuildABotConfig = {
+    chatbotId: ${chatbotIdStr},
+    apiUrl: '${apiUrl}',
+    apiKey: '${maskedKey}',
+    chatbotName: '${chatbot.name}'
+  };
+</script>
+<script src="${widgetUrl}/buildabot-widget.iife.js"></script>`;
+  const snippetCopy = `<script>
+  window.BuildABotConfig = {
+    chatbotId: ${chatbotIdStr},
+    apiUrl: '${apiUrl}',
+    apiKey: '${chatbot.api_key}',
+    chatbotName: '${chatbot.name}'
+  };
+</script>
+<script src="${widgetUrl}/buildabot-widget.iife.js"></script>`;
 
   return (
     <Box className={styles.page}>
@@ -104,12 +139,45 @@ const ChatbotDetails = () => {
                   </Text>
                 </Group>
                 <SecretKeyField label="API Key" value={chatbot.api_key} />
+                <Divider />
+                <Group gap="xs">
+                  <IconCode size={16} />
+                  <Text fw={600} size="sm">
+                    Embed Widget
+                  </Text>
+                </Group>
+                <Text size="xs" c="dimmed">
+                  Paste this snippet into any webpage to embed your chatbot as a floating widget.
+                </Text>
+                <Box pos="relative">
+                  <Code block style={{ fontSize: 11, paddingRight: 36 }}>
+                    {snippetDisplay}
+                  </Code>
+                  <CopyButton value={snippetCopy}>
+                    {({ copied, copy }) => (
+                      <Tooltip label={copied ? 'Copied!' : 'Copy'} withArrow>
+                        <ActionIcon
+                          pos="absolute"
+                          top={8}
+                          right={8}
+                          size="sm"
+                          variant="subtle"
+                          color={copied ? 'green' : 'gray'}
+                          onClick={copy}
+                        >
+                          {copied ? <IconCheck size={14} /> : <IconCopy size={14} />}
+                        </ActionIcon>
+                      </Tooltip>
+                    )}
+                  </CopyButton>
+                </Box>
               </Stack>
             </Card>
           </Stack>
           <ChatFlow
             chatId={chatbotId}
             chatBotName={chatbot.name}
+            apiKey={chatbot.api_key}
             isWorkflowConfigured={hasWorkflow}
             handleConfigureWorkflow={openWorkflowBuilder}
           />

@@ -6,6 +6,7 @@ export interface SendMessageRequest {
   chatbotId: number;
   message: string;
   userIdentifier: string;
+  apiKey: string;
 }
 
 export interface ChatResponse {
@@ -21,6 +22,7 @@ export async function sendMessage(
       {
         message: request.message,
         user_identifier: request.userIdentifier,
+        api_key: request.apiKey,
       },
     );
     if ('errors' in response.data) {
